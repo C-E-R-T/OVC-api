@@ -1,7 +1,10 @@
 package com.example.ovcbackend.global.commonResponse;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class OkResponse<T>{
     private int status;
 
