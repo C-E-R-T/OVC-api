@@ -1,6 +1,7 @@
 package com.example.ovcbackend.schedule.entity;
 
 import com.example.ovcbackend.certificate.entity.Certificate;
+import com.example.ovcbackend.schedule.ExamType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,8 +28,9 @@ public class Schedule {
     @Column(name = "exam_name", length = 100, nullable = false)
     private String examName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "exam_type", length = 20)
-    private String examType = "WRITTEN";
+    private ExamType examType;
 
     @Column(name="apply_start_at", nullable = false)
     private LocalDateTime applyStartAt;
