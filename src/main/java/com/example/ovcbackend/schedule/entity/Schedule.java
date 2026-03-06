@@ -42,7 +42,7 @@ public class Schedule {
     private LocalDateTime examAt;
 
     @Column(name = "result_at", nullable = false)
-    private LocalDateTime result_at;
+    private LocalDateTime resultAt;
 
     @CreatedDate
     @Column(name="created_at", nullable = false, updatable = false)
