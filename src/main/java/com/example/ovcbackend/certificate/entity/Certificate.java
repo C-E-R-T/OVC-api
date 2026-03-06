@@ -31,6 +31,12 @@ public class Certificate {
     @Column(name = "exam_trend", columnDefinition = "TEXT")
     private String examTrend;
 
+    @Column(name = "acq_method", columnDefinition = "TEXT")
+    private String acqMethod;
+
+    @Column(name = "precautions", columnDefinition = "TEXT")
+    private String precautions;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
