@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/calender")
+@RequestMapping("/api/calendar")
 @RequiredArgsConstructor
 public class ScheduleController {
     private final ScheduleService scheduleService;
