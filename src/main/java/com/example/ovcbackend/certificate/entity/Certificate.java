@@ -2,12 +2,12 @@ package com.example.ovcbackend.certificate.entity;
 
 
 import com.example.ovcbackend.category.entity.Category;
+import com.example.ovcbackend.global.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "certificates")
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Certificate {
+public class Certificate extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Certificate {
     private String name;
 
     @Column(nullable = false, length = 255)
-    private String agency;
+    private String authority;
 
     @Column(name = "exam_trend", columnDefinition = "TEXT")
     private String examTrend;
@@ -37,11 +37,13 @@ public class Certificate {
     @Column(name = "precautions", columnDefinition = "TEXT")
     private String precautions;
 
+    @Column(name = "written_fee")
+    private Integer writtenFee;
+
+    @Column(name = "practical_fee")
+    private Integer practicalFee;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 }
