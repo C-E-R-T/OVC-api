@@ -1,6 +1,7 @@
 package com.example.ovcbackend.category.entity;
 
 
+import com.example.ovcbackend.global.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,8 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class Category {
+public class Category extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,12 +23,8 @@ public class Category {
     @Column(nullable = false, length = 255)
     private String name;
 
+    // default를 안해주면 =0 초기화 값이 무시되고 null이 들어가는 경우가 생김
     @Builder.Default
     @Column(name = "sort_order", nullable = false)
     private Integer sortOrder = 0;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false,updatable = false)
-    private LocalDateTime createdAt;
-
 }
