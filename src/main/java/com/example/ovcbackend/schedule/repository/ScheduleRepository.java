@@ -18,4 +18,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                     + "OR s.resultAt BETWEEN :start AND :end"
     )
     List<Schedule> findAllByMonth(@Param("start")LocalDateTime start, @Param("end") LocalDateTime end);
+
+
 }

@@ -2,6 +2,15 @@ spring:
   application:
     name: ovc-backend
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}/${DB_PORT:5432}/${DB_NAME:ovc}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:}
+    url: jdbc:postgresql://localhost:5432/ovc
+    username: gahyeon
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect

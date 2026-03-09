@@ -2,6 +2,7 @@ package com.example.ovcbackend.schedule.controller;
 
 import com.example.ovcbackend.global.commonResponse.OkResponse;
 import com.example.ovcbackend.schedule.dto.CalenderResponse;
+import com.example.ovcbackend.schedule.entity.Schedule;
 import com.example.ovcbackend.schedule.service.ScheduleService;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleController {
     private final ScheduleService scheduleService;
+
+    @GetMapping("/test")
+    public ResponseEntity<List<Schedule>> getTest(){
+        return ResponseEntity.ok(scheduleService.getTest());
+    }
 
     @GetMapping
     public ResponseEntity<OkResponse<List<CalenderResponse>>> getMonthlyCalendar(

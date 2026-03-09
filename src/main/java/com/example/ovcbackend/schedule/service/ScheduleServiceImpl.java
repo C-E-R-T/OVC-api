@@ -42,6 +42,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
+    @Override
+    public List<Schedule> getTest(){
+        return scheduleRepository.findAll();
+    }
+
     // type에 따라 dto로 변환하기 위해
     private CalenderResponse convertToDto(Schedule s, String type, LocalDateTime start, LocalDateTime end){
         return CalenderResponse.builder()
