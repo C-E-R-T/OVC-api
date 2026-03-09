@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ovc-backend
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}/${DB_PORT:5432}/${DB_NAME:ovc}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:}

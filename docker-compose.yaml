@@ -1,0 +1,47 @@
+services:
+  # PostgreSQL 컨테이너
+  postgres:
+    image: postgres:15-alpine
+    container_name: ovc-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:5432"
+    networks:
+      - ovc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  #Spring Boot 컨테이너
+  app:
+    image: ${DOCKER_USERNAME}/ovc-app:latest
+    container_name: ovc-app
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${APP_PORT}:8080"
+    networks:
+      - ovc-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  ovc-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
