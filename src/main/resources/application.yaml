@@ -3,7 +3,7 @@ spring:
     name: ovc-backend
   datasource:
     url: jdbc:postgresql://localhost:5432/ovc
-    username: gahyeon
+    username: ${USERNAME}
     driver-class-name: org.postgresql.Driver
 
   jpa:
