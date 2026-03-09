@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         YearMonth yearMonth = YearMonth.of(year, month);
         LocalDateTime start = yearMonth.atDay(1).atStartOfDay();
         LocalDateTime end = yearMonth.atEndOfMonth().atTime(23, 59, 59);
-
         // DB 조회
         List<Schedule> schedules = scheduleRepository.findAllByMonth(start, end);
         // response를 위한 arraylist
@@ -49,6 +49,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // type에 따라 dto로 변환하기 위해
     private CalenderResponse convertToDto(Schedule s, String type, LocalDateTime start, LocalDateTime end){
+        // 일정의 시작과 끝의 기간 차 (달력에 기간 길이 때 사용)
+        long duration = ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate()) + 1;
         return CalenderResponse.builder()
                 .scheduleId(s.getId())
                 .certificateName(s.getCertificate().getName())
@@ -57,6 +59,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .eventType(type)
                 .startDate(start)
                 .endDate(end)
+                .durationDays(duration)
                 .build();
     }
 }

@@ -4,7 +4,6 @@ import com.example.ovcbackend.global.commonResponse.OkResponse;
 import com.example.ovcbackend.schedule.dto.CalenderResponse;
 import com.example.ovcbackend.schedule.entity.Schedule;
 import com.example.ovcbackend.schedule.service.ScheduleService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

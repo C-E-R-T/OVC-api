@@ -25,4 +25,6 @@ public class CalenderResponse {
     private LocalDateTime startDate;
     @Schema(description = "시험 종료일")
     private LocalDateTime endDate;
+    @Schema(description = "총 기간(일수)", example = "5")
+    private Long durationDays;
 }
