@@ -34,6 +34,7 @@ public class CertificateController {
     public ResponseEntity<OkResponse<Map<String, Object>>> searchCertificates(
             @RequestParam(name = "categoryIds", required = false) List<Long> categoryIds,
             @RequestParam(name = "keyword", defaultValue = "") String keyword,
+            @org.springdoc.core.annotations.ParameterObject // 스웨거로 page를 파라미터로 받으려면 이와 같이 설정해줘야 됨.
             @PageableDefault(page = 0, size = 6, sort="name", direction = Sort.Direction.ASC) Pageable pageable,
             HttpServletRequest request
     ) {

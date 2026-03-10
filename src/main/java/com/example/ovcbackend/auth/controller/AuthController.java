@@ -1,0 +1,28 @@
+package com.example.ovcbackend.auth.controller;
+
+import com.example.ovcbackend.auth.dto.SignUpRequest;
+import com.example.ovcbackend.auth.dto.SignUpResponse;
+import com.example.ovcbackend.auth.service.AuthService;
+import com.example.ovcbackend.global.commonResponse.OkResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
+public class AuthController {
+    private final AuthService authService;
+
+    @PostMapping("/signup")
+    public ResponseEntity<OkResponse<SignUpResponse>> signup (@RequestBody
+    SignUpRequest signUpRequest, HttpServletRequest request){
+        SignUpResponse signUpResponse = authService.signup(signUpRequest);
+
+        return ResponseEntity.ok(OkResponse.success("회원가입이 완료되었습니다.", signUpResponse, request.getRequestURI()));
+    }
+}
