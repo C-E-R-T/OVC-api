@@ -1,5 +1,6 @@
 package com.example.ovcbackend.global.commonResponse;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
@@ -9,14 +10,15 @@ import java.util.Map;
 
 @Getter
 public class OkResponse<T>{
+    @Schema(description = "응답", example = "200")
     private int status;
-
+    @Schema(description = "응답 메시지", example = "요청 성공")
     private String message;
 
     private T data;
-
+    @Schema(description = "응답 시간", example = "2026-03-11T08:41:28.940195")
     private String timestamp;
-
+    @Schema(description = "응답 요청 api 경로", example = "/api/categories")
     private String path;
 
     public OkResponse(int status, String message, T data, String path){
