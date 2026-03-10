@@ -4,6 +4,7 @@ import com.example.ovcbackend.certificate.dto.CertResponse;
 import com.example.ovcbackend.certificate.dto.CertSearchResponse;
 import com.example.ovcbackend.certificate.service.CertificateService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Certificate controller", description = "자격증 관련 api")
 @RestController
 @RequestMapping("/api/certs")
 @RequiredArgsConstructor

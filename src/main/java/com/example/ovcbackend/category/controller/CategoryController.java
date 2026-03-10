@@ -3,6 +3,7 @@ package com.example.ovcbackend.category.controller;
 import com.example.ovcbackend.category.dto.CategoryResponse;
 import com.example.ovcbackend.category.service.CategoryService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Category Controller", description = "카테고리 관련 api")
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
