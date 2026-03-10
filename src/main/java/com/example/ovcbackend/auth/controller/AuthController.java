@@ -6,6 +6,7 @@ import com.example.ovcbackend.auth.dto.SignUpRequest;
 import com.example.ovcbackend.auth.dto.SignUpResponse;
 import com.example.ovcbackend.auth.service.AuthService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Auth API", description = "인증/인가를 관리하기 위한 api입니다.")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
