@@ -31,6 +31,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/ovc-backend
+
             docker-compose pull
-            docker-compose up -d
-            docker image prune -f
+            docker-compose up -d --force-recreate
+            docker image prune -a -f
