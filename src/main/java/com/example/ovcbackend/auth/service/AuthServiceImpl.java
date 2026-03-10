@@ -25,6 +25,7 @@ public class AuthServiceImpl implements AuthService{
             throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
 
+
         // 패스워드 암호화
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
