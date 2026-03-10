@@ -1,7 +1,10 @@
 package com.example.ovcbackend.auth.service;
 
+import com.example.ovcbackend.auth.dto.LoginRequest;
+import com.example.ovcbackend.auth.dto.LoginResponse;
 import com.example.ovcbackend.auth.dto.SignUpRequest;
 import com.example.ovcbackend.auth.dto.SignUpResponse;
+import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
 import com.example.ovcbackend.user.Role;
 import com.example.ovcbackend.user.entity.User;
 import com.example.ovcbackend.user.repository.UserRepository;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public SignUpResponse signup(SignUpRequest request) {
@@ -34,5 +38,25 @@ public class AuthServiceImpl implements AuthService{
         User savedUser = userRepository.save(user);
 
         return SignUpResponse.from(savedUser);
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest request){
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() ->  new RuntimeException("가입되지 않은 이메일입니다."));
+
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        String accessToken = jwtTokenProvider.createToken(user.getEmail(), user.getRole().name());
+        String refreshToken = jwtTokenProvider.RefreshToken(user.getEmail());
+
+        LoginResponse res = LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+
+        return res;
     }
 }

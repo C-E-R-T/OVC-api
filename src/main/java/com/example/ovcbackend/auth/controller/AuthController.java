@@ -1,5 +1,7 @@
 package com.example.ovcbackend.auth.controller;
 
+import com.example.ovcbackend.auth.dto.LoginRequest;
+import com.example.ovcbackend.auth.dto.LoginResponse;
 import com.example.ovcbackend.auth.dto.SignUpRequest;
 import com.example.ovcbackend.auth.dto.SignUpResponse;
 import com.example.ovcbackend.auth.service.AuthService;
@@ -24,5 +26,12 @@ public class AuthController {
         SignUpResponse signUpResponse = authService.signup(signUpRequest);
 
         return ResponseEntity.ok(OkResponse.success("회원가입이 완료되었습니다.", signUpResponse, request.getRequestURI()));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<OkResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request){
+        LoginResponse loginResponse = authService.login(loginRequest);
+
+        return ResponseEntity.ok(OkResponse.success(loginResponse, request.getRequestURI()));
     }
 }
