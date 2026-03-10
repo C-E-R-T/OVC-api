@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class CalenderResponse {
-    @Schema(description = "스케쥴 아이디", example = "true")
+    @Schema(description = "스케쥴 아이디", example = "1")
     private Long scheduleId;
     @Schema(description = "자격증 이름", example = "정보처리기사")
     private String certificateName;

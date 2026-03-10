@@ -37,6 +37,9 @@ public class Certificate extends BaseTime {
     @Column(name = "precautions", columnDefinition = "TEXT")
     private String precautions;
 
+    @Column(name="description", columnDefinition = "TEXT")
+    private String description;
+
     @Column(name = "written_fee")
     private Integer writtenFee;
 
@@ -44,6 +47,9 @@ public class Certificate extends BaseTime {
     private Integer practicalFee;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false,insertable = false, updatable = false)
     private Category category;
+
+    @Column(name = "category_id")
+    private Long categoryId;
 }

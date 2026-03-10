@@ -16,7 +16,7 @@ public class Category extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String name;
 
     // default를 안해주면 =0 초기화 값이 무시되고 null이 들어가는 경우가 생김
