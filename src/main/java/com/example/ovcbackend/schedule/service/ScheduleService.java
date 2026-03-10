@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ScheduleService {
     List<CalenderResponse> getMonthlyCalender(int year, int month);
-//    List<Schedule> getTest();
+    List<Schedule> getTest();
 }

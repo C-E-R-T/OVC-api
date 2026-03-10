@@ -17,10 +17,10 @@ import java.util.List;
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
-//    @GetMapping("/test")
-//    public ResponseEntity<List<Schedule>> getTest(){
-//        return ResponseEntity.ok(scheduleService.getTest());
-//    }
+    @GetMapping("/test")
+    public ResponseEntity<List<Schedule>> getTest(){
+        return ResponseEntity.ok(scheduleService.getTest());
+    }
 
     @GetMapping
     public ResponseEntity<OkResponse<List<CalenderResponse>>> getMonthlyCalendar(
