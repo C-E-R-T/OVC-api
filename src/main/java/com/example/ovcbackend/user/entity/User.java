@@ -14,7 +14,6 @@ import lombok.*;
 @Builder
 public class User extends BaseTime {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

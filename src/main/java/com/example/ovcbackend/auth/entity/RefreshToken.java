@@ -4,6 +4,8 @@ import com.example.ovcbackend.global.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,10 +21,14 @@ public class RefreshToken extends BaseTime {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String token;
 
+    @Column(nullable = false)
+    private LocalDateTime expiresAt;
+
     @Builder
-    public RefreshToken(String email, String token){
+    public RefreshToken(String email, String token, LocalDateTime expiresAt){
         this.email = email;
         this.token = token;
+        this.expiresAt = expiresAt;
     }
 
 }
