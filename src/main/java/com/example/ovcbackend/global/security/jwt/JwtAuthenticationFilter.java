@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,7 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             if(token != null && jwtTokenProvider.validateToken(token)){
-
+                // 토큰으로 유저 정보를 담은 authentication 가져오기
+                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                // security context에 인증 정보 저장
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
             }
         } catch (SecurityException | MalformedJwtException e) {

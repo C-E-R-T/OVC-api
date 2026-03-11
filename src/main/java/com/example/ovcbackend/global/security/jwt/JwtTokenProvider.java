@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
@@ -90,5 +91,7 @@ public class JwtTokenProvider {
 
         return new UsernamePasswordAuthenticationToken(userDetails,"", userDetails.getAuthorities());
     }
+
+    //refresh 만료 시간 localdatetime으로 변환하여 반환하는 함수 필요
 
 }
