@@ -7,6 +7,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -73,16 +74,11 @@ public class JwtTokenProvider {
                     .build()
                     .parseSignedClaims(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-
-        } catch (ExpiredJwtException e) {
-
-        } catch (UnsupportedJwtException e) {
-
-        } catch (IllegalArgumentException e){
-
+        } catch (SecurityException | MalformedJwtException
+                 | ExpiredJwtException | UnsupportedJwtException| IllegalArgumentException e) {
+            throw e;
         }
-        return false;
     }
+
 
 }
