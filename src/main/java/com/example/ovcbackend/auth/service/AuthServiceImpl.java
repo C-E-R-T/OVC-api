@@ -4,7 +4,6 @@ import com.example.ovcbackend.auth.dto.LoginRequest;
 import com.example.ovcbackend.auth.dto.LoginResponse;
 import com.example.ovcbackend.auth.dto.SignUpRequest;
 import com.example.ovcbackend.auth.dto.SignUpResponse;
-import com.example.ovcbackend.auth.entity.RefreshToken;
 import com.example.ovcbackend.auth.repository.RefreshTokenRepository;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
 import com.example.ovcbackend.user.Role;
@@ -13,9 +12,6 @@ import com.example.ovcbackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

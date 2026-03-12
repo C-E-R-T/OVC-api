@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Component
@@ -84,6 +86,7 @@ public class JwtTokenProvider {
         }
     }
 
+    // 인증 객체 생성
     public Authentication getAuthentication(String token) {
         String email = getEmail(token);
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
@@ -92,5 +95,19 @@ public class JwtTokenProvider {
     }
 
     //refresh 만료 시간 localdatetime으로 변환하여 반환하는 함수 필요
+    public LocalDateTime getExpirationLocalDateTime(String token) {
+        Date expiration = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
+
+        return expiration.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
+
+
 
 }
