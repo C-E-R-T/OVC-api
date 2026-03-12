@@ -1,5 +1,6 @@
 package com.example.ovcbackend.global.config;
 
+import com.example.ovcbackend.auth.service.CustomOAuth2UserService;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
 
     // 패스워드 암호화
     @Bean
