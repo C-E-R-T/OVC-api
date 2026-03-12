@@ -1,9 +1,7 @@
 package com.example.ovcbackend.auth.service;
 
-import com.example.ovcbackend.auth.dto.LoginRequest;
-import com.example.ovcbackend.auth.dto.LoginResponse;
-import com.example.ovcbackend.auth.dto.SignUpRequest;
-import com.example.ovcbackend.auth.dto.SignUpResponse;
+import com.example.ovcbackend.auth.dto.*;
+import com.example.ovcbackend.auth.entity.RefreshToken;
 import com.example.ovcbackend.auth.repository.RefreshTokenRepository;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
 import com.example.ovcbackend.user.Role;
@@ -12,6 +10,9 @@ import com.example.ovcbackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -61,5 +62,48 @@ public class AuthServiceImpl implements AuthService{
                 .build();
 
         return res;
+    }
+
+    // 로그인 성공 시 리프레시 토큰 저장
+    @Override
+    public void saveRefreshToken(String email, String token) {
+        LocalDateTime expiresAt = jwtTokenProvider.getExpirationLocalDateTime(token);
+
+        RefreshToken refreshToken = refreshTokenRepository.findByEmail(email)
+                .map(existToken -> {
+                    existToken.updateToken(token, expiresAt);
+                    return existToken;
+                })
+                .orElse(RefreshToken.builder()
+                        .email(email)
+                        .token(token)
+                        .expiresAt(expiresAt)
+                        .build());
+
+        refreshTokenRepository.save(refreshToken);
+    }
+
+    // 리프레시 토큰으로 액세스 토큰 발급
+    @Override
+    @Transactional
+    public TokenResponse refreshAccessToken(String refreshToken) {
+
+        if(!jwtTokenProvider.validateToken(refreshToken)) {
+            throw new RuntimeException("유효하지 않은 리프레시 토큰입니다.");
+        }
+
+        // db에 저장된 토큰인지 확인
+        RefreshToken saveRefreshToken = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 리프레시 토큰입니다."));
+
+        User user = userRepository.findByEmail(saveRefreshToken.getEmail())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        //새로운 토큰 발급
+        String newAccessToken = jwtTokenProvider.createToken(user.getEmail(), user.getRole().name());
+        String newRefreshToken = jwtTokenProvider.refreshToken(user.getEmail());
+
+        saveRefreshToken.updateToken(newRefreshToken, jwtTokenProvider.getExpirationLocalDateTime(newRefreshToken));
+
+        return TokenResponse.of(newAccessToken,newRefreshToken);
     }
 }
