@@ -26,6 +26,7 @@ import java.util.List;
 public class SecurityConfig {
 
 
+
     // 패스워드 암호화
     @Bean
     public PasswordEncoder passwordEncoder(){
