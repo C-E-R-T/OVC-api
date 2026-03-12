@@ -1,8 +1,10 @@
 package com.example.ovcbackend.global.config;
 
 import com.example.ovcbackend.auth.service.CustomOAuth2UserService;
+import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizatioonRequestRepository;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationFilter;
+import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
 import com.example.ovcbackend.global.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,9 +29,9 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
+    private final HttpCookieOAuth2AuthorizatioonRequestRepository httpCookieOAuth2AuthorizatioonRequestRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -44,7 +46,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 // stateless로 두면 네이버 로그인 시도 에러가 나기도 함 방법을 찾아봐야될 듯 사용자가 네이버에서 로그인을 마치고 돌아왔을 때 사용자가 맞나 확인이 필요해짐
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/login/oauth2/**", "/oauth2/**").permitAll()
@@ -56,10 +58,13 @@ public class SecurityConfig {
                                 "/webjars/**").permitAll()
                         .anyRequest().authenticated() // permitAll 외는 인증 필요
                 )
-                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .successHandler(oAuth2SuccessHandler)
+                .oauth2Login(oauth2 -> oauth2.authorizationEndpoint(endpoint -> endpoint
+                                .baseUri("/oauth2/authorization")
+                                .authorizationRequestRepository(httpCookieOAuth2AuthorizatioonRequestRepository))
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler) // 로그인을 성공하면 토큰 발급
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

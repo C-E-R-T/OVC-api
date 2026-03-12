@@ -1,5 +1,6 @@
 package com.example.ovcbackend.global.security.jwt;
 
+import com.example.ovcbackend.global.util.CookieUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -12,14 +13,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 // securityconfig에 주입하기 위해 componet를 붙여야 bean으로 등록됨.
-@Component
+// security config에서 2번 실행될 수 있어서 component 제거
+
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
@@ -58,15 +59,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
             return bearerToken.substring(7);
         }
+
+        // 헤더가 없으면 쿠키를 확인
+        return CookieUtils.getCookies(request, "accessToken")
+                .map(Cookie::getValue)
+                .orElse(null);
         // 쿠키
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null) {
-            for (Cookie cookie : cookies) {
-                if("accessToken".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
+//        Cookie[] cookies = request.getCookies();
+//        if(cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if("accessToken".equals(cookie.getName())) {
+//                    return cookie.getValue();
+//                }
+//            }
+//        }
+//        return null;
     }
 }

@@ -1,6 +1,9 @@
 package com.example.ovcbackend.global.security.oauth;
 
+import com.example.ovcbackend.auth.service.AuthService;
+import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizatioonRequestRepository;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
+import com.example.ovcbackend.global.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,8 @@ import java.util.Map;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
+    private final HttpCookieOAuth2AuthorizatioonRequestRepository httpCookieOAuth2AuthorizatioonRequestRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -44,31 +49,43 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtTokenProvider.createToken(email, role);
         String refreshToken = jwtTokenProvider.refreshToken(email);
 
-        // 토큰을 HttpOnly 쿠키 생성
-        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
-                .path("/")
-                .httpOnly(true)
-                .secure(false)
-                .maxAge(3600)
-                .sameSite("Lax")
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        authService.saveRefreshToken(email, refreshToken);
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
-                .path("/")
-                .httpOnly(true)
-                .secure(false)
-                .maxAge(60 * 60 * 24 * 7) // 7일
-                .sameSite("Lax")
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+        CookieUtils.addCookie(response, "accessToken", accessToken, 3600);
+        CookieUtils.addCookie(response, "refreshToken", refreshToken, 604800);
+
+//        // 토큰을 HttpOnly 쿠키 생성
+//        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+//                .path("/")
+//                .httpOnly(true)
+//                .secure(false)
+//                .maxAge(3600)
+//                .sameSite("Lax")
+//                .build();
+//        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+//
+//        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+//                .path("/")
+//                .httpOnly(true)
+//                .secure(false)
+//                .maxAge(60 * 60 * 24 * 7) // 7일
+//                .sameSite("Lax")
+//                .build();
+//        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
 
         // 백엔드에서 확인용 // 프론트엔드 리다이렉트 url
         String targetUrl ="http://localhost:5173/mypage";
 
-
+        // 로그인에 성공하면 임시 쿠키 지우기
+        clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
+    }
+
+    protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
+        super.clearAuthenticationAttributes(request);
+        httpCookieOAuth2AuthorizatioonRequestRepository.removeAuthorizationRequestCookies(request, response);
+
     }
 
 }
