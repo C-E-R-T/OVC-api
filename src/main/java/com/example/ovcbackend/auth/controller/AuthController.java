@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth controller", description = "인증/인가(auth) 관련 api")
 @RestController
@@ -35,5 +32,10 @@ public class AuthController {
         LoginResponse loginResponse = authService.login(loginRequest);
 
         return ResponseEntity.ok(OkResponse.success(loginResponse, request.getRequestURI()));
+    }
+
+    @GetMapping("/temp-success")
+    public String tempSuccess(@RequestParam(value = "accessToken", required = false) String accessToken) {
+        return "로그인 성공";
     }
 }

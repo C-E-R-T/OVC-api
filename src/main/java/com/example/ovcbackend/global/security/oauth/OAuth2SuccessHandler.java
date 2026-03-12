@@ -43,10 +43,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtTokenProvider.createToken(email, role);
         String refreshToken = jwtTokenProvider.refreshToken(email);
 
-
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/login-success")
-                .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
+        // 백엔드에서 확인용
+        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/auth/temp-success")
                 .build()
                 .toUriString();
 

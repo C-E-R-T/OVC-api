@@ -5,20 +5,25 @@ import com.example.ovcbackend.user.entity.User;
 import com.example.ovcbackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException{
@@ -52,6 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .orElse(User.builder() // 만약에 없다면 신규로 만든다.
                         .email(email)
                         .name(name)
+                        .password(passwordEncoder.encode("OAUTH2_USER_" + UUID.randomUUID()))
                         .provider(registrationId)
                         .providerId(providerId)
                         .profileImageUrl(profileImage)
