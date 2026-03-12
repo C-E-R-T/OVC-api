@@ -44,7 +44,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtTokenProvider.createToken(email, role);
         String refreshToken = jwtTokenProvider.refreshToken(email);
 
-        // 토큰을 HttpOnlyznzlfh vhwkd
+        // 토큰을 HttpOnly 쿠키 생성
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
                 .path("/")
                 .httpOnly(true)
@@ -64,8 +64,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
 
-        // 백엔드에서 확인용
-        String targetUrl ="http://localhost:8080/api/auth/temp-success";
+        // 백엔드에서 확인용 // 프론트엔드 리다이렉트 url
+        String targetUrl ="http://localhost:5173/mypage";
 
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
