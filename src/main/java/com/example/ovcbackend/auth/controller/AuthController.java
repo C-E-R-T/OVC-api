@@ -34,8 +34,4 @@ public class AuthController {
         return ResponseEntity.ok(OkResponse.success(loginResponse, request.getRequestURI()));
     }
 
-    @GetMapping("/temp-success")
-    public String tempSuccess(@RequestParam(value = "accessToken", required = false) String accessToken) {
-        return "로그인 성공";
-    }
 }
