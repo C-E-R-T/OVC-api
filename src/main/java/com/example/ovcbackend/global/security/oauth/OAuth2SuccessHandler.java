@@ -1,14 +1,12 @@
 package com.example.ovcbackend.global.security.oauth;
 
 import com.example.ovcbackend.auth.service.AuthService;
-import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizatioonRequestRepository;
+import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
 import com.example.ovcbackend.global.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -24,7 +22,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthService authService;
-    private final HttpCookieOAuth2AuthorizatioonRequestRepository httpCookieOAuth2AuthorizatioonRequestRepository;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -84,7 +82,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
-        httpCookieOAuth2AuthorizatioonRequestRepository.removeAuthorizationRequestCookies(request, response);
+        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
     }
 

@@ -1,7 +1,7 @@
 package com.example.ovcbackend.global.config;
 
 import com.example.ovcbackend.auth.service.CustomOAuth2UserService;
-import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizatioonRequestRepository;
+import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationFilter;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final HttpCookieOAuth2AuthorizatioonRequestRepository httpCookieOAuth2AuthorizatioonRequestRepository;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
@@ -60,7 +60,7 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2.authorizationEndpoint(endpoint -> endpoint
                                 .baseUri("/oauth2/authorization")
-                                .authorizationRequestRepository(httpCookieOAuth2AuthorizatioonRequestRepository))
+                                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(oAuth2SuccessHandler) // 로그인을 성공하면 토큰 발급
                 )
