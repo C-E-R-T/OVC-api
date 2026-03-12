@@ -6,31 +6,29 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
 @Schema(description = "찜한 자격증 응답 dto")
 public class FavoriteResponse {
     @Schema(description = "자격증 id", example = "1")
     private Long certId;
-    private Long categoryId;
-    private String name;
-    private String authority;
-    private String description;
-    private LocalDateTime createdAt;
+    private String title;
+    @Schema(description = "카드 타입(APPLY/EXAM/RESULT)", example = "APPLY")
+    private String type;
+    @Schema(description = "시작일(yyyy-MM-dd)", example = "2026-03-10")
+    private String startDate;
+    @Schema(description = "종료일(yyyy-MM-dd)", example = "2026-03-15")
+    private String endDate;
 
-    public static FavoriteResponse from(Favorite favorite) {
-        // 리스트 응답에서 필요한 자격증 정보만 추려서 반환
+    public static FavoriteResponse from(Favorite favorite, String type, String startDate, String endDate) {
+        // 프론트 카드 렌더링에 필요한 최소 필드만 담아 반환
         Certificate certificate = favorite.getCertificate();
-
         return FavoriteResponse.builder()
                 .certId(certificate.getId())
-                .categoryId(certificate.getCategoryId())
-                .name(certificate.getName())
-                .authority(certificate.getAuthority())
-                .description(certificate.getDescription())
-                .createdAt(favorite.getCreatedAt())
+                .title(certificate.getName())
+                .type(type)
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
     }
 }
