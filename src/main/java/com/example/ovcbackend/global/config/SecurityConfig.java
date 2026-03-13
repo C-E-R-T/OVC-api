@@ -58,7 +58,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
                                 "/webjars/**").permitAll()
-                        .requestMatchers("/error").permitAll() // 이거 해줘야 permitAll에서 터진 에러를 보여줌
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/user/**").permitAll()// 이거 해줘야 permitAll에서 터진 에러를 보여줌
                         .anyRequest().authenticated() // permitAll 외는 인증 필요
                 )
                 .oauth2Login(oauth2 -> oauth2.authorizationEndpoint(endpoint -> endpoint
