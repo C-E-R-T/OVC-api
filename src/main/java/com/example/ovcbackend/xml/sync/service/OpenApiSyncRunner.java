@@ -21,6 +21,7 @@ public class OpenApiSyncRunner implements ApplicationRunner {
     private final CertificateRepository certificateRepository;
     private final ScheduleRepository scheduleRepository;
 
+    // 애플리케이션 시작 시 1회 부트스트랩 동기화 실행
     @Override
     public void run(ApplicationArguments args) {
         if (!isBootstrapRequired()) {
@@ -36,6 +37,7 @@ public class OpenApiSyncRunner implements ApplicationRunner {
                 summary.getScheduleSyncedCertIds().size());
     }
 
+    // DB가 완전히 비어있는 초기 상태인지 판단
     private boolean isBootstrapRequired() {
         return categoryRepository.count() == 0
                 && certificateRepository.count() == 0

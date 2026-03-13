@@ -44,6 +44,13 @@ jobs:
             APP_PORT=${{secrets.APP_PORT}}
             NAVER_CLIENT_ID=${{secrets.NAVER_CLIENT_ID}}
             NAVER_CLIENT_SECRET=${{secrets.NAVER_CLIENT_SECRET}}
+            OPEN_API_CERT_CATEGORY_KEY=${{secrets.OPEN_API_CERT_CATEGORY_KEY}}
+            OPEN_API_CERT_CATEGORY_BASEURL=${{secrets.OPEN_API_CERT_CATEGORY_BASEURL}}
+            OPEN_API_CERT_DETAIL_KEY=${{secrets.OPEN_API_CERT_DETAIL_KEY}}
+            OPEN_API_CERT_DETAIL_BASEURL=${{secrets.OPEN_API_CERT_DETAIL_BASEURL}}
+            OPEN_API_SCHEDULE_KEY=${{secrets.OPEN_API_SCHEDULE_KEY}}
+            OPEN_API_SCHEDULE_BASEURL=${{secrets.OPEN_API_SCHEDULE_BASEURL}}
+            
             EOF
 
             docker-compose pull

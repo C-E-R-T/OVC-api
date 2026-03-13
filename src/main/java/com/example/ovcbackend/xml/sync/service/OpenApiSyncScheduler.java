@@ -14,6 +14,7 @@ public class OpenApiSyncScheduler {
 
     private final PopularCertificateSyncService popularCertificateSyncService;
 
+    // 매월 설정된 시각에 인기 자격증 동기화 파이프라인 실행
     @Scheduled(
             cron = "${spring.openapi.sync.monthly.cron}",
             zone = "${spring.openapi.sync.monthly.zone}"

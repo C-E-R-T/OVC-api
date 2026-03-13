@@ -22,6 +22,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     )
     List<Schedule> findAllByMonth(@Param("start")LocalDateTime start, @Param("end") LocalDateTime end);
 
+    // certificate + 시험유형 + 회차 기준으로 기존 일정 조회
     Optional<Schedule> findByCertificateIdAndExamTypeAndExamRound(Long certificateId, ExamType examType, String examRound);
   
   // 찜 목록 카드 생성용으로 cert에 매핑되는 스케줄을 한 번에 조회

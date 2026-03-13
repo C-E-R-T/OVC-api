@@ -19,6 +19,7 @@ public class PopularCertificateSyncController {
 
     private final PopularCertificateSyncService popularCertificateSyncService;
 
+    // 전달받은 인기 자격증 이름 목록 기준으로 기본/상세/일정 동기화 실행
     @PostMapping("/popular-certificates")
     public ResponseEntity<OkResponse<PopularCertificateSyncResult>> syncPopularCertificates(
             @Valid @RequestBody PopularCertificateSyncRequest requestBody,

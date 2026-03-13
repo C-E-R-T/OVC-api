@@ -33,6 +33,7 @@ public class SecurityConfig {
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    // Spring Security 인증 매니저 노출
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config
@@ -40,6 +41,7 @@ public class SecurityConfig {
         return  config.getAuthenticationManager();
     }
 
+    // 인증/인가 규칙과 세션 정책 정의
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
@@ -69,6 +71,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // 프론트 연동을 위한 CORS 정책
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

@@ -29,11 +29,13 @@ public class CertificateDetailSyncService {
     @Value("${spring.openapi.cert-detail.key}")
     private String certDetailKey;
 
+    // 기존 전체 자격증 대상 상세정보 동기화(레거시 호환용)
     public void updateCertificateDetails(String baseUrl, String serviceKey) {
         List<Certificate> certs = certificateRepository.findAll();
         syncCertificateDetails(certs, baseUrl, serviceKey);
     }
 
+    // 전달된 종목코드 목록만 대상으로 상세정보 동기화
     public List<String> updateCertificateDetailsByCertIds(List<String> certIds) {
         if (certIds == null || certIds.isEmpty()) {
             return List.of();
@@ -50,6 +52,7 @@ public class CertificateDetailSyncService {
         return syncCertificateDetails(certificates, certDetailBaseUrl, certDetailKey);
     }
 
+    // 상세 OpenAPI 호출 -> 파싱 -> certificate 상세 필드 업데이트
     private List<String> syncCertificateDetails(List<Certificate> certs, String baseUrl, String serviceKey) {
         List<String> syncedCertIds = new ArrayList<>();
 
@@ -104,6 +107,7 @@ public class CertificateDetailSyncService {
         return syncedCertIds;
     }
 
+    // 파싱된 상세 값들을 엔티티에 반영 후 저장
     private void saveCertificateDetails(Certificate cert, String[] data) {
         transactionTemplate.executeWithoutResult(status -> {
             cert.updateDetailedInfo(
@@ -117,6 +121,7 @@ public class CertificateDetailSyncService {
         });
     }
 
+    // infogb/contents 조합에서 서비스에 필요한 5개 상세 속성 추출
     private String[] parseContents(List<CertificateDetailApiResponse.CertDetailItemDto> items) {
         String examTrend = null;
         String acqMethod = null;
@@ -157,6 +162,7 @@ public class CertificateDetailSyncService {
         return new String[]{dept, subject, examTrend, acqMethod, criteria};
     }
 
+    // 항목별 텍스트에서 특정 블록을 정규식으로 추출
     private String extractByPattern(String content, String regex) {
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
                 regex,
@@ -169,6 +175,7 @@ public class CertificateDetailSyncService {
         return null;
     }
 
+    // HTML/엔티티/불필요 스타일을 제거해 파싱 가능한 일반 텍스트로 정리
     private String cleanHtml(String content) {
         if (content == null) {
             return "";
@@ -188,6 +195,7 @@ public class CertificateDetailSyncService {
         return cleaned.replaceAll("\\s+", " ").trim();
     }
 
+    // 일부 숫자 엔티티를 유니코드 문자로 치환
     private String decodeNumericEntities(String content) {
         Map<String, String> replacements = Map.of(
                 "&#9312;", "①",
@@ -204,10 +212,12 @@ public class CertificateDetailSyncService {
         return decoded;
     }
 
+    // 빈 문자열을 null로 표준화
     private String emptyToNull(String s) {
         return (s == null || s.isBlank()) ? null : s;
     }
 
+    // 상세 정보가 이미 존재하면 재호출을 건너뛰기 위한 체크
     private boolean hasDetailedInfo(Certificate cert) {
         return hasText(cert.getRelatedDepartment())
                 || hasText(cert.getExamSubject())
@@ -216,10 +226,12 @@ public class CertificateDetailSyncService {
                 || hasText(cert.getPassCriteria());
     }
 
+    // null/blank 여부 공통 체크
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
     }
 
+    // 로그 출력을 위한 길이 제한 문자열 요약
     private String summarize(String value) {
         if (value == null || value.isBlank()) {
             return "null";
