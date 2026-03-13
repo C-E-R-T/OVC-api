@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: ovc-backend
   datasource:
@@ -23,6 +25,24 @@ spring:
     header: Authorization
     prefix: "Bearer "
 
+  openapi:
+    cert-category:
+      base-url: ${OPEN_API_CERT_CATEGORY_BASEURL}
+      key: ${OPEN_API_CERT_CATEGORY_KEY}
+    cert-detail:
+      base-url: ${OPEN_API_CERT_DETAIL_BASEURL}
+      key: ${OPEN_API_CERT_DETAIL_KEY}
+    schedule:
+      base-url: ${OPEN_API_SCHEDULE_BASEURL}
+      key: ${OPEN_API_SCHEDULE_KEY}
+    sync:
+      popular-certificate-names: ${OPEN_API_POPULAR_CERTIFICATE_NAMES:컴퓨터활용능력 2급,컴퓨터활용능력 1급,워드프로세서,지게차운전기능사,한식조리기능사,전기기능사,전기산업기사,전기기사,건축산업기사,건축기사,토목기사,직업상담사 2급,산업안전기사,건설안전기사,위험물산업기사,소방설비기사(기계),소방설비기사(전기),사회조사분석사 2급,전산세무 2급,GTQ 포토샵,정보처리기사}
+      bootstrap:
+        enabled: ${OPEN_API_BOOTSTRAP_SYNC_ENABLED:false}
+      monthly:
+        enabled: ${OPEN_API_MONTHLY_SYNC_ENABLED:false}
+        cron: ${OPEN_API_MONTHLY_SYNC_CRON:0 0 3 1 * *}
+        zone: ${OPEN_API_MONTHLY_SYNC_ZONE:Asia/Seoul}
   security:
     oauth2:
       client:

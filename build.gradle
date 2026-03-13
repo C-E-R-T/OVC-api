@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml' // xml 읽어오는 라이브러리
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
 
@@ -20,5 +21,12 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     // 카테고리 다중 필터가 없을 때 검색
     Page<Certificate> findByNameContainingIgnoreCase(String keyword, Pageable pageable);
+
+    //xml에서 자격증이 이미 등록되어 있는지 이름으로 확인
+    boolean existsByName(String name);
+
+    Optional<Certificate> findByName(String name);
+
+    Optional<Certificate> findByCertId(String certId);
 
 }

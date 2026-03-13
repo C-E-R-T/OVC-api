@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/login/oauth2/**", "/oauth2/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/login/oauth2/**", "/oauth2/**","/api/admin/sync/**").permitAll()
                         .requestMatchers("/api/certs/**", "/api/calendar/**", "/api/categories").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",

@@ -4,6 +4,7 @@ import com.example.ovcbackend.global.commonResponse.OkResponse;
 import com.example.ovcbackend.schedule.dto.CalenderResponse;
 import com.example.ovcbackend.schedule.dto.ScheduleResponse;
 import com.example.ovcbackend.schedule.service.ScheduleService;
+import com.example.ovcbackend.xml.sync.service.ScheduleSyncService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleController {
     private final ScheduleService scheduleService;
+    private final ScheduleSyncService scheduleSyncService;
 
     @GetMapping
     public ResponseEntity<OkResponse<List<CalenderResponse>>> getMonthlyCalendar(
@@ -31,6 +33,13 @@ public class ScheduleController {
         return ResponseEntity.ok(OkResponse.success(responses, request.getRequestURI()));
     }
 
+    @PostMapping("/sync")
+    public ResponseEntity<OkResponse<List<String>>> syncSchedules(
+            @RequestParam(name = "certIds") List<String> certIds,
+            HttpServletRequest request
+    ) {
+        List<String> syncedCertIds = scheduleSyncService.syncCurrentYearSchedules(certIds);
+        return ResponseEntity.ok(OkResponse.success("시험일정 동기화가 완료되었습니다.", syncedCertIds, request.getRequestURI()));
     @GetMapping("/certificate/{certId}")
     public ResponseEntity<OkResponse<List<ScheduleResponse>>> getCertificateSchedules(
             @PathVariable("certId") Long certId,
