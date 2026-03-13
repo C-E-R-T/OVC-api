@@ -55,12 +55,13 @@ spring:
             client-secret: ${NAVER_CLIENT_SECRET}
             client-name: Naver
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/naver"
+            redirect-uri: "https://ovc-cert.duckdns.org/login/oauth2/code/naver"
             scope:
               - name
               - email
               - nickname
               - profile_image
+              - nickname
         provider:
           naver:
             authorization-uri: https://nid.naver.com/oauth2.0/authorize
