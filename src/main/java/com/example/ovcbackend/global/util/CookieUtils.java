@@ -35,9 +35,9 @@ public class CookieUtils {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .path("/")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .maxAge(maxAge)
-                .sameSite("Lax")
+                .sameSite("None")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
@@ -52,8 +52,8 @@ public class CookieUtils {
                             .path("/")
                             .maxAge(0)
                             .httpOnly(true)
-                            .secure(false)
-                            .sameSite("Lax")
+                            .secure(true)
+                            .sameSite("None")
                             .build();
                     response.addHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
                 }
