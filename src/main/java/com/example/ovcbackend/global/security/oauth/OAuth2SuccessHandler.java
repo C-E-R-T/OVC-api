@@ -49,7 +49,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         authService.saveRefreshToken(email, refreshToken);
 
-        CookieUtils.addCookie(response, "accessToken", accessToken, 3600);
+        CookieUtils.addCookie(response, "accessToken", accessToken, 604800);
         CookieUtils.addCookie(response, "refreshToken", refreshToken, 604800);
 
 //        // 토큰을 HttpOnly 쿠키 생성
@@ -73,7 +73,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         // 백엔드에서 확인용 // 프론트엔드 리다이렉트 url
-        String targetUrl ="https://ovc-project.vercel.app/mypage";
+        String targetUrl ="http://localhost:5173/mypage";
 
         // 로그인에 성공하면 임시 쿠키 지우기
         clearAuthenticationAttributes(request, response);
