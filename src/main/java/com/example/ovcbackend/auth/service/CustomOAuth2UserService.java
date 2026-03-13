@@ -49,6 +49,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private User saveOrUpdate(Map<String, Object> response, String registrationId) {
         String email = (String) response.get("email");
         String name = (String) response.get("name");
+        String nickname = (String) response.get("nickname");
         String profileImage = (String) response.get("profile_image");
         String providerId = (String) response.get("id");
 
@@ -57,6 +58,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .orElse(User.builder() // 만약에 없다면 신규로 만든다.
                         .email(email)
                         .name(name)
+                        .nickname(nickname) // 네이버 닉네임과 ovc의 닉네임을 분리하기 위해 or else에 추가
                         .password(passwordEncoder.encode("OAUTH2_USER_" + UUID.randomUUID()))
                         .provider(registrationId)
                         .providerId(providerId)

@@ -22,6 +22,8 @@ public class User extends BaseTime {
     @Column(nullable = false)
     private String name;
 
+    private String nickname;
+
     private String password;
 
     private String provider;
@@ -34,10 +36,11 @@ public class User extends BaseTime {
     private Role role = Role.ROLE_USER;
 
     @Builder
-    public User (String email, String name, String password, String provider,
+    public User (String email, String name, String nickname, String password, String provider,
                  String providerId, String profileImageUrl, Role role) {
         this.email = email;
         this.name = name;
+        this.nickname = nickname;
         this.password = password;
         this.provider = provider;
         this.providerId = providerId;
@@ -45,8 +48,9 @@ public class User extends BaseTime {
         this.role = (role != null) ? role : Role.ROLE_USER;
     }
 
-    public User update(String name, String profileImageUrl) {
-        this.name = name;
+    public User update(String nickname, String profileImageUrl) {
+
+        this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         return this;
     }
