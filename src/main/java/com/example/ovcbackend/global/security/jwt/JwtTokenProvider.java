@@ -7,9 +7,14 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Component
@@ -17,15 +22,17 @@ public class JwtTokenProvider {
     private final SecretKey secretKey;
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
+    private final CustomUserDetailsService customUserDetailsService;
 
 
     public JwtTokenProvider(
             @Value("${spring.jwt.secret}") String secret,
             @Value("${spring.jwt.access-token-expiration}") long accessTokenExpiration,
-            @Value("${spring.jwt.refresh-token-expiration}") long refreshTokenExpiration) {
+            @Value("${spring.jwt.refresh-token-expiration}") long refreshTokenExpiration, CustomUserDetailsService customUserDetailsService) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     //토큰 생성
@@ -43,7 +50,7 @@ public class JwtTokenProvider {
     }
 
     // refresh 토큰 생성
-    public String RefreshToken(String email) {
+    public String refreshToken(String email) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenExpiration);
 
@@ -73,16 +80,34 @@ public class JwtTokenProvider {
                     .build()
                     .parseSignedClaims(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-
-        } catch (ExpiredJwtException e) {
-
-        } catch (UnsupportedJwtException e) {
-
-        } catch (IllegalArgumentException e){
-
+        } catch (SecurityException | MalformedJwtException
+                 | ExpiredJwtException | UnsupportedJwtException| IllegalArgumentException e) {
+            throw e;
         }
-        return false;
     }
+
+    // 인증 객체 생성
+    public Authentication getAuthentication(String token) {
+        String email = getEmail(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+
+        return new UsernamePasswordAuthenticationToken(userDetails,"", userDetails.getAuthorities());
+    }
+
+    //refresh 만료 시간 localdatetime으로 변환하여 반환하는 함수 필요
+    public LocalDateTime getExpirationLocalDateTime(String token) {
+        Date expiration = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
+
+        return expiration.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
+
+
 
 }

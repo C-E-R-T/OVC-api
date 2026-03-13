@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class SignUpRequest {
     // 회원가입 전용 dto
-    @Schema(name = "username", example = "user")
+    @Schema(name = "userName", example = "user")
     private String userName;
     @Schema(name = "password", example = "12345678")
     private String password;

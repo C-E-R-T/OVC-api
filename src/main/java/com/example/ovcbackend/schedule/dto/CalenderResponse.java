@@ -27,4 +27,6 @@ public class CalenderResponse {
     private LocalDateTime endDate;
     @Schema(description = "총 기간(일수)", example = "5")
     private Long durationDays;
+    @Schema(description = "자격증 아이디", example = "1")
+    private Long certId;
 }

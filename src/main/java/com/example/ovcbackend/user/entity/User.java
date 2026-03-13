@@ -7,11 +7,9 @@ import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Getter // 데이터 무결성을 위해 Setter 제거
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
+// 클래스 레벨에 @Builder을 붙이면 모든 필드가 빌더가 포함되서 id와 basetime 필드가 노출될 수 있어 따로 구현이 좋음
 public class User extends BaseTime {
 
     @Id
@@ -24,11 +22,37 @@ public class User extends BaseTime {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    private String nickname;
+
     private String password;
 
+    private String provider;
+    private String providerId;
+
+    private String profileImageUrl;
+
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     @Column(nullable = false)
     private Role role = Role.ROLE_USER;
+
+    @Builder
+    public User (String email, String name, String nickname, String password, String provider,
+                 String providerId, String profileImageUrl, Role role) {
+        this.email = email;
+        this.name = name;
+        this.nickname = nickname;
+        this.password = password;
+        this.provider = provider;
+        this.providerId = providerId;
+        this.profileImageUrl = profileImageUrl;
+        this.role = (role != null) ? role : Role.ROLE_USER;
+    }
+
+    public User update(String nickname) {
+
+        if(nickname != null && !nickname.isBlank()) {
+            this.nickname = nickname;
+        }
+        return this;
+    }
 }

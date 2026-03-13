@@ -11,11 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "certificates")
-@Getter @Setter
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-@EntityListeners(AuditingEntityListener.class)
 public class Certificate extends BaseTime {
 
     @Id
@@ -64,6 +61,26 @@ public class Certificate extends BaseTime {
 
     @Column(name = "category_id")
     private Long categoryId;
+
+    @Builder
+    public Certificate(String name, String authority, String certId, String examTrend,
+                       String acqMethod, String precautions, String description,
+                       Integer writtenFee, Integer practicalFee, String relatedDepartment,
+                       String examSubject, String passCriteria, Long categoryId) {
+        this.name = name;
+        this.authority = authority;
+        this.certId = certId;
+        this.examTrend = examTrend;
+        this.acqMethod = acqMethod;
+        this.precautions = precautions;
+        this.description = description;
+        this.writtenFee = writtenFee;
+        this.practicalFee = practicalFee;
+        this.relatedDepartment = relatedDepartment;
+        this.examSubject = examSubject;
+        this.passCriteria = passCriteria;
+        this.categoryId = categoryId;
+    }
 
 
     public void updateBasicInfo(String authority, String certId, Long categoryId) {

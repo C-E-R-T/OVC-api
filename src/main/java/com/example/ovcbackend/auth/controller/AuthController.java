@@ -1,19 +1,16 @@
 package com.example.ovcbackend.auth.controller;
 
-import com.example.ovcbackend.auth.dto.LoginRequest;
-import com.example.ovcbackend.auth.dto.LoginResponse;
-import com.example.ovcbackend.auth.dto.SignUpRequest;
-import com.example.ovcbackend.auth.dto.SignUpResponse;
+import com.example.ovcbackend.auth.dto.*;
 import com.example.ovcbackend.auth.service.AuthService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
+import com.example.ovcbackend.global.util.CookieUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth controller", description = "인증/인가(auth) 관련 api")
 @RestController
@@ -36,4 +33,24 @@ public class AuthController {
 
         return ResponseEntity.ok(OkResponse.success(loginResponse, request.getRequestURI()));
     }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<OkResponse<String>> refresh(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = CookieUtils.getCookies(request, "refreshToken")
+                .map(Cookie::getValue)
+                .orElseThrow(() -> new RuntimeException("리프레시 토큰이 없습니다."));
+
+        TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
+
+        CookieUtils.addCookie(response, "accessToken", tokenResponse.getAccessToken(), 3600);
+        CookieUtils.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 604800);
+
+        return ResponseEntity.ok(OkResponse.success("토큰 재발급 성공", request.getRequestURI()));
+    }
+
+
+
+
+
+
 }

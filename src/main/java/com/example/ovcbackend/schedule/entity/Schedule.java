@@ -13,9 +13,6 @@ import java.time.LocalDateTime;
 @Table(name = "schedules")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-@EntityListeners(AuditingEntityListener.class)
 public class Schedule extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +46,29 @@ public class Schedule extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cert_id", nullable = false)
     private Certificate certificate;
+
+    @Builder
+    public Schedule (
+            String examName,
+            String examRound,
+            ExamType examType,
+            LocalDateTime applyStartAt,
+            LocalDateTime applyEndAt,
+            LocalDateTime examStartAt,
+            LocalDateTime examEndAt,
+            LocalDateTime resultAt,
+            Certificate certificate
+    ){
+        this.examName = examName;
+        this.examRound = examRound;
+        this.examType = examType;
+        this.applyStartAt = applyStartAt;
+        this.applyEndAt = applyEndAt;
+        this.examStartAt = examStartAt;
+        this.examEndAt = examEndAt;
+        this.resultAt = resultAt;
+        this.certificate = certificate;
+    }
 
     public void updateSchedule(
             String examName,

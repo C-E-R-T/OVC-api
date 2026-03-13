@@ -1,7 +1,11 @@
 package com.example.ovcbackend.global.config;
 
+import com.example.ovcbackend.auth.service.CustomOAuth2UserService;
+import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationEntryPoint;
+import com.example.ovcbackend.global.security.jwt.JwtAuthenticationFilter;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
+import com.example.ovcbackend.global.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,9 +14,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,11 +27,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // 패스워드 암호화
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -38,24 +41,32 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                // stateless로 두면 네이버 로그인 시도 에러가 나기도 함 방법을 찾아봐야될 듯 사용자가 네이버에서 로그인을 마치고 돌아왔을 때 사용자가 맞나 확인이 필요해짐
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/admin/sync/**").permitAll() // openDataAPI로 값 불러오는 api
+                        .requestMatchers("/api/auth/**", "/login/oauth2/**", "/oauth2/**","/api/admin/sync/**").permitAll()
                         .requestMatchers("/api/certs/**", "/api/calendar/**", "/api/categories").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
                                 "/webjars/**").permitAll()
+                        .requestMatchers("/error").permitAll() // 이거 해줘야 permitAll에서 터진 에러를 보여줌
                         .anyRequest().authenticated() // permitAll 외는 인증 필요
-                ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(csrf -> csrf.disable());
-
+                )
+                .oauth2Login(oauth2 -> oauth2.authorizationEndpoint(endpoint -> endpoint
+                                .baseUri("/oauth2/authorization")
+                                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler) // 로그인을 성공하면 토큰 발급
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
-
     }
 
     @Bean
@@ -63,7 +74,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(List.of("Authorization"));

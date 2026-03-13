@@ -31,4 +31,10 @@ public class RefreshToken extends BaseTime {
         this.expiresAt = expiresAt;
     }
 
+    // 새로운 토큰 재발급
+    public void updateToken(String newToken, LocalDateTime newExpiresAt) {
+        this.token = newToken;
+        this.expiresAt = newExpiresAt;
+    }
+
 }

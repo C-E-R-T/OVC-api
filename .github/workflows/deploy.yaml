@@ -42,6 +42,8 @@ jobs:
             JWT_ACCESS_EXPIRATION=${{ secrets.JWT_ACCESS_EXPIRATION }}
             JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}
             APP_PORT=${{secrets.APP_PORT}}
+            NAVER_CLIENT_ID=${{secrets.NAVER_CLIENT_ID}}
+            NAVER_CLIENT_SECRET=${{secrets.NAVER_CLIENT_SECRET}}
             EOF
 
             docker-compose pull
