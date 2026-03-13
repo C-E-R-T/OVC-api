@@ -27,6 +27,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     Optional<Certificate> findByName(String name);
 
+    // 외부 종목코드(cert_id)로 자격증 단건 조회
     Optional<Certificate> findByCertId(String certId);
 
 }

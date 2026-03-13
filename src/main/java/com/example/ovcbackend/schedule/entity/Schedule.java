@@ -70,6 +70,7 @@ public class Schedule extends BaseTime {
         this.certificate = certificate;
     }
 
+    // 외부 API 동기화 결과를 현재 엔티티 상태로 갱신
     public void updateSchedule(
             String examName,
             String examRound,

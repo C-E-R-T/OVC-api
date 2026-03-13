@@ -21,6 +21,7 @@ public class PopularCertificateSyncService {
     @Value("${spring.openapi.sync.popular-certificate-names}")
     private String popularCertificateNames;
 
+    // 요청 이름 목록을 기준으로 기본/상세/일정 동기화를 순차 실행
     public PopularCertificateSyncResult syncPopularCertificates(List<String> certificateNames) {
         SyncSummary summary = syncCertificates(certificateNames);
 
@@ -35,6 +36,7 @@ public class PopularCertificateSyncService {
                 .build();
     }
 
+    // 설정값(popular-certificate-names) 기반으로 전체 동기화 실행
     public SyncSummary syncConfiguredPopularCertificates() {
         List<String> certificateNames = Arrays.stream(popularCertificateNames.split(","))
                 .map(String::trim)
@@ -44,6 +46,7 @@ public class PopularCertificateSyncService {
         return syncCertificates(certificateNames);
     }
 
+    // 공통 동기화 파이프라인: category/certificate -> detail -> schedule
     private SyncSummary syncCertificates(List<String> certificateNames) {
         CertificateCategorySyncService.TargetCertificateSyncResult categorySyncResult =
                 certificateCategorySyncService.syncCertificatesByNames(certificateNames);

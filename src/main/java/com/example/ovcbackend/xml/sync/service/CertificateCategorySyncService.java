@@ -39,6 +39,7 @@ public class CertificateCategorySyncService {
     @Value("${spring.openapi.cert-category.key}")
     private String certCategoryKey;
 
+    // 카테고리 API 전체 응답을 기준으로 category/certificate 기본정보 적재
     @Transactional
     public void fetchAndSaveCertificates(String apiUrl) {
         CertificateCategoryApiResponse response = restTemplate.getForObject(apiUrl, CertificateCategoryApiResponse.class);
@@ -54,6 +55,7 @@ public class CertificateCategorySyncService {
         }
     }
 
+    // 요청된 자격증 이름만 선별하여 category/certificate를 upsert
     @Transactional
     public TargetCertificateSyncResult syncCertificatesByNames(List<String> requestedNames) {
         List<String> sanitizedNames = sanitizeNames(requestedNames);
@@ -103,6 +105,7 @@ public class CertificateCategorySyncService {
                 .build();
     }
 
+    // 카테고리 이름 기준으로 존재하면 재사용, 없으면 생성
     private Category getOrCreateCategory(String categoryName) {
         return categoryRepository.findByName(categoryName)
                 .orElseGet(() -> categoryRepository.save(
@@ -113,6 +116,7 @@ public class CertificateCategorySyncService {
                 ));
     }
 
+    // 자격증 이름 기준으로 기본정보 upsert
     private Certificate upsertCertificate(CertificateCategoryApiResponse.CertItemDto itemDto, Category category) {
         return certificateRepository.findByName(itemDto.getName())
                 .map(existing -> {
@@ -130,6 +134,7 @@ public class CertificateCategorySyncService {
                 ));
     }
 
+    // 자격증 카테고리 OpenAPI 호출 URL 생성
     private URI buildApiUri() {
         return UriComponentsBuilder.fromHttpUrl(certCategoryBaseUrl)
                 .queryParam("serviceKey", certCategoryKey)
@@ -140,6 +145,7 @@ public class CertificateCategorySyncService {
                 .toUri();
     }
 
+    // 매칭 결과가 비어있을 때 공통 응답 형태 생성
     private TargetCertificateSyncResult emptyResult(List<String> requestedNames) {
         return TargetCertificateSyncResult.builder()
                 .requestedNames(requestedNames)
@@ -150,6 +156,7 @@ public class CertificateCategorySyncService {
                 .build();
     }
 
+    // null/blank 제거 + trim + 중복 제거
     private List<String> sanitizeNames(List<String> requestedNames) {
         if (requestedNames == null) {
             return List.of();
@@ -161,6 +168,7 @@ public class CertificateCategorySyncService {
                 .toList();
     }
 
+    // 이름 비교를 위한 표준화(공백/괄호 제거, 소문자화)
     private String normalizeName(String name) {
         if (name == null) {
             return "";

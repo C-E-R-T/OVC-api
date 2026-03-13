@@ -20,6 +20,7 @@ import java.util.List;
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
+    // 지정 월 범위의 일정을 조회해 이벤트 타입별(APPLY/EXAM/RESULT)로 펼쳐 반환
     @Override
     public List<CalenderResponse> getMonthlyCalender(int year, int month) {
         YearMonth yearMonth = YearMonth.of(year, month);

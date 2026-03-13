@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class OvcBackendApplication {
 
+	// 애플리케이션 부트스트랩 진입점
 	public static void main(String[] args) {
 		SpringApplication.run(OvcBackendApplication.class, args);
 	}

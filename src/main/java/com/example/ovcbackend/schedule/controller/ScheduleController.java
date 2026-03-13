@@ -22,6 +22,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     private final ScheduleSyncService scheduleSyncService;
 
+    // 월 단위 캘린더 이벤트 조회
     @GetMapping
     public ResponseEntity<OkResponse<List<CalenderResponse>>> getMonthlyCalendar(
             @RequestParam(name="year") int year,
@@ -33,6 +34,7 @@ public class ScheduleController {
         return ResponseEntity.ok(OkResponse.success(responses, request.getRequestURI()));
     }
 
+    // 지정 자격증의 올해 일정을 수동 동기화
     @PostMapping("/sync")
     public ResponseEntity<OkResponse<List<String>>> syncSchedules(
             @RequestParam(name = "certIds") List<String> certIds,
@@ -40,6 +42,8 @@ public class ScheduleController {
     ) {
         List<String> syncedCertIds = scheduleSyncService.syncCurrentYearSchedules(certIds);
         return ResponseEntity.ok(OkResponse.success("시험일정 동기화가 완료되었습니다.", syncedCertIds, request.getRequestURI()));
+    }
+
     @GetMapping("/certificate/{certId}")
     public ResponseEntity<OkResponse<List<ScheduleResponse>>> getCertificateSchedules(
             @PathVariable("certId") Long certId,

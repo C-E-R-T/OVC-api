@@ -83,6 +83,7 @@ public class Certificate extends BaseTime {
     }
 
 
+    // 카테고리/기관/종목코드 등 기본 메타 정보를 갱신
     public void updateBasicInfo(String authority, String certId, Long categoryId) {
         this.authority = authority;
         this.certId = certId;
@@ -90,6 +91,7 @@ public class Certificate extends BaseTime {
         this.description = null;
     }
 
+    // 상세 API에서 내려온 부가 정보를 갱신
     public void updateDetailedInfo(String dept, String subject, String trend, String method, String passCriteria) {
         this.relatedDepartment = dept;
         this.examSubject = subject;
