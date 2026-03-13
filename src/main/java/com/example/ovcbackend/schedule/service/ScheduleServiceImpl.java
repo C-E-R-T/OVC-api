@@ -57,6 +57,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .startDate(start)
                 .endDate(end)
                 .durationDays(duration)
+                .certId(s.getCertificate().getId())
                 .build();
     }
 
