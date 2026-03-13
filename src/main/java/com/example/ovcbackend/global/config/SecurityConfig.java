@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/admin/sync/**").permitAll() // openDataAPI로 값 불러오는 api
                         .requestMatchers("/api/certs/**", "/api/calendar/**", "/api/categories").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",

@@ -33,7 +33,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             // 접수일정
             events.add(convertToDto(s, "APPLY", s.getApplyStartAt(), s.getApplyEndAt()));
             // 시험일정
-            events.add(convertToDto(s, "EXAM", s.getExamAt(), s.getExamAt()));
+            events.add(convertToDto(s, "EXAM", s.getExamStartAt(), s.getExamEndAt()));
             // 시험결과일정
             events.add(convertToDto(s, "RESULT", s.getResultAt(), s.getResultAt()));
         }

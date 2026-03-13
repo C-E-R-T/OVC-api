@@ -26,7 +26,7 @@ public class Schedule extends BaseTime {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "exam_type", length = 50)
-    private ExamType examType;
+    private ExamType examType; //필기,실기
 
     @Column(name = "exam_round")
     private String examRound;
@@ -37,8 +37,11 @@ public class Schedule extends BaseTime {
     @Column(name = "apply_end_at", nullable = false)
     private LocalDateTime applyEndAt;
 
-    @Column(name="exam_at", nullable = false)
-    private LocalDateTime examAt;
+    @Column(name="exam_start_at", nullable = false)
+    private LocalDateTime examStartAt;
+
+    @Column(name = "exam_end_at", nullable = false)
+    private LocalDateTime examEndAt;
 
     @Column(name = "result_at", nullable = false)
     private LocalDateTime resultAt;
@@ -46,4 +49,24 @@ public class Schedule extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cert_id", nullable = false)
     private Certificate certificate;
+
+    public void updateSchedule(
+            String examName,
+            String examRound,
+            ExamType examType,
+            LocalDateTime applyStartAt,
+            LocalDateTime applyEndAt,
+            LocalDateTime examStartAt,
+            LocalDateTime examEndAt,
+            LocalDateTime resultAt
+    ) {
+        this.examName = examName;
+        this.examRound = examRound;
+        this.examType = examType;
+        this.applyStartAt = applyStartAt;
+        this.applyEndAt = applyEndAt;
+        this.examStartAt = examStartAt;
+        this.examEndAt = examEndAt;
+        this.resultAt = resultAt;
+    }
 }

@@ -28,6 +28,9 @@ public class Certificate extends BaseTime {
     @Column(nullable = false, length = 255)
     private String authority;
 
+    @Column(name = "cert_id", length = 50)
+    private String certId;
+
     @Column(name = "exam_trend", columnDefinition = "TEXT")
     private String examTrend;
 
@@ -46,10 +49,35 @@ public class Certificate extends BaseTime {
     @Column(name = "practical_fee")
     private Integer practicalFee;
 
+    @Column(name = "related_department", columnDefinition = "TEXT")
+    private String relatedDepartment; // 관련학과
+
+    @Column(name = "exam_subject" , columnDefinition = "TEXT")
+    private String examSubject;       // 시험과목
+
+    @Column(name = "pass_criteria" , columnDefinition = "TEXT")
+    private String passCriteria;    // 합격기준
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false,insertable = false, updatable = false)
     private Category category;
 
     @Column(name = "category_id")
     private Long categoryId;
+
+
+    public void updateBasicInfo(String authority, String certId, Long categoryId) {
+        this.authority = authority;
+        this.certId = certId;
+        this.categoryId = categoryId;
+        this.description = null;
+    }
+
+    public void updateDetailedInfo(String dept, String subject, String trend, String method, String passCriteria) {
+        this.relatedDepartment = dept;
+        this.examSubject = subject;
+        this.examTrend = trend;
+        this.acqMethod = method;
+        this.passCriteria = passCriteria;
+    }
 }

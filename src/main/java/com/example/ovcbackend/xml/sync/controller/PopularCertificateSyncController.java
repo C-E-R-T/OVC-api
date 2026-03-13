@@ -1,0 +1,34 @@
+package com.example.ovcbackend.xml.sync.controller;
+
+import com.example.ovcbackend.global.commonResponse.OkResponse;
+import com.example.ovcbackend.xml.sync.dto.PopularCertificateSyncRequest;
+import com.example.ovcbackend.xml.sync.dto.PopularCertificateSyncResult;
+import com.example.ovcbackend.xml.sync.service.PopularCertificateSyncService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Tag(name = "popular certificate sync Controller", description = "인기 자격증 선별 동기화 api")
+@RestController
+@RequestMapping("/api/admin/sync")
+@RequiredArgsConstructor
+public class PopularCertificateSyncController {
+
+    private final PopularCertificateSyncService popularCertificateSyncService;
+
+    @PostMapping("/popular-certificates")
+    public ResponseEntity<OkResponse<PopularCertificateSyncResult>> syncPopularCertificates(
+            @Valid @RequestBody PopularCertificateSyncRequest requestBody,
+            HttpServletRequest request
+    ) {
+        PopularCertificateSyncResult result =
+                popularCertificateSyncService.syncPopularCertificates(requestBody.getCertificateNames());
+
+        return ResponseEntity.ok(
+                OkResponse.success("인기 자격증 동기화가 완료되었습니다.", result, request.getRequestURI())
+        );
+    }
+}
