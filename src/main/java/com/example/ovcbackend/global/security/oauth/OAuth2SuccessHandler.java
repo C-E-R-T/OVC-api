@@ -73,7 +73,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         // 백엔드에서 확인용 // 프론트엔드 리다이렉트 url
-        String targetUrl ="https://ovc-project.vercel.app/oauth-success";
+        String targetUrl ="https://ovc-project.vercel.app/mypage";
 
         // 로그인에 성공하면 임시 쿠키 지우기
         clearAuthenticationAttributes(request, response);
