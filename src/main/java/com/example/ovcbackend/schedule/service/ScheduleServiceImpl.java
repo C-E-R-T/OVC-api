@@ -1,6 +1,7 @@
 package com.example.ovcbackend.schedule.service;
 
 import com.example.ovcbackend.schedule.dto.CalenderResponse;
+import com.example.ovcbackend.schedule.dto.ScheduleResponse;
 import com.example.ovcbackend.schedule.entity.Schedule;
 import com.example.ovcbackend.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             // 접수일정
             events.add(convertToDto(s, "APPLY", s.getApplyStartAt(), s.getApplyEndAt()));
             // 시험일정
-            events.add(convertToDto(s, "EXAM", s.getExamAt(), s.getExamAt()));
+            events.add(convertToDto(s, "EXAM", s.getExamStartAt(), s.getExamEndAt()));
             // 시험결과일정
             events.add(convertToDto(s, "RESULT", s.getResultAt(), s.getResultAt()));
         }
@@ -42,10 +43,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
-//    @Override
-//    public List<Schedule> getTest(){
-//        return scheduleRepository.findAll();
-//    }
 
     // type에 따라 dto로 변환하기 위해
     private CalenderResponse convertToDto(Schedule s, String type, LocalDateTime start, LocalDateTime end){
@@ -61,5 +58,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .endDate(end)
                 .durationDays(duration)
                 .build();
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<ScheduleResponse> getSchedules(Long certId, int year) {
+        return scheduleRepository.findByCertificateIdAndYear(certId, year)
+                .stream()
+                .map(ScheduleResponse::from)
+                .toList();
     }
 }

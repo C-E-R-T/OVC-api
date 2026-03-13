@@ -82,10 +82,11 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         for (Schedule schedule : schedules) {
             // 프론트 카드 타입에 맞춰 3종 이벤트 후보를 만든다.
+            // exam get
             addCandidate(active, upcoming, past, today, "APPLY",
                     schedule.getApplyStartAt().toLocalDate(), schedule.getApplyEndAt().toLocalDate());
             addCandidate(active, upcoming, past, today, "EXAM",
-                    schedule.getExamAt().toLocalDate(), schedule.getExamAt().toLocalDate());
+                    schedule.getExamStartAt().toLocalDate(), schedule.getExamEndAt().toLocalDate());
             addCandidate(active, upcoming, past, today, "RESULT",
                     schedule.getResultAt().toLocalDate(), schedule.getResultAt().toLocalDate());
         }

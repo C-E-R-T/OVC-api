@@ -13,9 +13,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query(
             "SELECT s FROM Schedule s "
                     + "JOIN FETCH s.certificate c "
-                    + "WHERE s.examAt BETWEEN:start AND :end "
-                    + "OR s.applyStartAt BETWEEN :start AND :end "
-                    + "OR s.resultAt BETWEEN :start AND :end"
+                    + "WHERE (s.examStartAt <= :end AND s.examEndAt >= :start) "
+                    + "OR (s.applyStartAt <= :end AND s.applyEndAt >= :start) "
+                    + "OR (s.resultAt BETWEEN :start AND :end)"
     )
     List<Schedule> findAllByMonth(@Param("start")LocalDateTime start, @Param("end") LocalDateTime end);
 
@@ -29,4 +29,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     )
     List<Schedule> findSchedulesByCertIds(@Param("certIds") List<Long> certIds);
 
+    @Query("SELECT s FROM Schedule s " +
+            "WHERE s.certificate.id = :certId AND YEAR(s.examStartAt) = :year " +
+            "ORDER BY s.examStartAt ASC, s.examType ASC")
+    List<Schedule> findByCertificateIdAndYear(@Param("certId") Long certId, @Param("year") int year);
 }
