@@ -59,6 +59,7 @@ spring:
             scope:
               - name
               - email
+              - nickname
               - profile_image
         provider:
           naver:
