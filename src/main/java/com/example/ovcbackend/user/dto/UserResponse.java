@@ -19,7 +19,7 @@ public class UserResponse {
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .name(user.getEmail())
+                .name(user.getName())
                 .profileImageUrl(user.getProfileImageUrl())
                 .role(user.getRole().name())
                 .build();
