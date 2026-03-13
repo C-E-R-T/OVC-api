@@ -49,7 +49,6 @@ public class User extends BaseTime {
     }
 
     public User update(String nickname, String profileImageUrl) {
-
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         return this;
