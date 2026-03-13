@@ -12,6 +12,7 @@ public class UserResponse {
     private Long id;
     private String email;
     private String name;
+    private String nickname;
     private String profileImageUrl;
     private String role;
 
@@ -20,6 +21,7 @@ public class UserResponse {
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
+                .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
                 .role(user.getRole().name())
                 .build();
