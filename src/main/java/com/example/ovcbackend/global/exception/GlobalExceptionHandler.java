@@ -3,6 +3,9 @@ package com.example.ovcbackend.global.exception;
 import com.example.ovcbackend.user.favorite.exception.FavoriteBadRequestException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteConflictException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteNotFoundException;
+import com.example.ovcbackend.user.cert.exception.MyCertBadRequestException;
+import com.example.ovcbackend.user.cert.exception.MyCertConflictException;
+import com.example.ovcbackend.user.cert.exception.MyCertNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request);
     }
 
+    @ExceptionHandler(MyCertBadRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleMyCertBadRequest(MyCertBadRequestException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request);
+    }
+
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, MethodArgumentNotValidException.class})
     public ResponseEntity<Map<String, Object>> handleValidation(Exception e, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "요청 파라미터 형식이 올바르지 않습니다.", request);
@@ -33,8 +41,18 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
     }
 
+    @ExceptionHandler(MyCertNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleMyCertNotFound(MyCertNotFoundException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
+    }
+
     @ExceptionHandler(FavoriteConflictException.class)
     public ResponseEntity<Map<String, Object>> handleConflict(FavoriteConflictException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(), request);
+    }
+
+    @ExceptionHandler(MyCertConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleMyCertConflict(MyCertConflictException e, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(), request);
     }
 
