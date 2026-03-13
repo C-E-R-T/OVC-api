@@ -48,9 +48,11 @@ public class User extends BaseTime {
         this.role = (role != null) ? role : Role.ROLE_USER;
     }
 
-    public User update(String nickname, String profileImageUrl) {
-        this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
+    public User update(String nickname) {
+
+        if(nickname != null && !nickname.isBlank()) {
+            this.nickname = nickname;
+        }
         return this;
     }
 }

@@ -27,13 +27,13 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        if(!user.getNickname().equals(userUpdateRequest.getNickname())){
-            if(userRepository.existsByNickname(userUpdateRequest.getNickname())){
-                throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
-            }
-        }
+       if(userUpdateRequest.getNickname() != null && !user.getNickname().equals(userUpdateRequest.getNickname())){
+           if(userRepository.existsByNickname(userUpdateRequest.getNickname())) {
+               throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+           }
+       }
 
-        user.update(userUpdateRequest.getNickname(), userUpdateRequest.getProfileImageUrl());
+        user.update(userUpdateRequest.getNickname());
 
         return UserResponse.from(user);
     }

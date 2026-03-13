@@ -54,7 +54,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = (String) response.get("id");
 
         User user = userRepository.findByEmail(email)
-                .map(entity -> entity.update(name, profileImage)) // 이미 있다면 업데이트
+                .map(entity -> {
+                    String currentNickname =(entity.getNickname() != null) ? entity.getNickname() : name;
+                    return entity.update(currentNickname);
+                })// 이미 있다면 업데이트
                 .orElse(User.builder() // 만약에 없다면 신규로 만든다.
                         .email(email)
                         .name(name)
