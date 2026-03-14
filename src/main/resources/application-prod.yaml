@@ -61,7 +61,6 @@ spring:
               - email
               - nickname
               - profile_image
-              - nickname
         provider:
           naver:
             authorization-uri: https://nid.naver.com/oauth2.0/authorize
