@@ -1,4 +1,4 @@
-package com.example.ovcbackend.global.security.oauth;
+package com.example.ovcbackend.oauth;
 
 import com.example.ovcbackend.auth.service.AuthService;
 import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizationRequestRepository;

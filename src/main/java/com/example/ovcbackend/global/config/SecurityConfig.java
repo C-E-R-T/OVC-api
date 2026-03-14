@@ -5,7 +5,7 @@ import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizationRequest
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationFilter;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
-import com.example.ovcbackend.global.security.oauth.OAuth2SuccessHandler;
+import com.example.ovcbackend.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
