@@ -106,4 +106,10 @@ public class AuthServiceImpl implements AuthService{
 
         return TokenResponse.of(newAccessToken,newRefreshToken);
     }
+
+    @Override
+    @Transactional
+    public void logout(String email) {
+        refreshTokenRepository.deleteByEmail(email);
+    }
 }

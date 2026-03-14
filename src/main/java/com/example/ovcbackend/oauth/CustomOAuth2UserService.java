@@ -18,17 +18,25 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
+// 네이버와 서버간 STATE, CODE를 통해 본인을 확인하고 받은
+// 제공자(네이버)가 발급한 Access Token을 사용하여 유저 정보를 가져와서 규격에 맞게 데이터를 정제하는 역할
+//즉, JSON 구조를 프로젝트의 entity로 변환하는 과정
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional // sprint security가 기본으로 제공하는 OAuth2 유저 서비스를 상속받으므로 원하는 로직을 덧붙임
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
+    private final PasswordEncoder passwordEncoder; // oauth에는 password가 필요없으나 나중에 확장을 위해 무작위 번호를 암호화해 주입시킴
+    // OAuth2UserRequest는 네이버 api에 접근할 수 있는 모든 정보를 들고 있음
+    // registrationId, accesstoken, yaml에 설정한 client-id, client-secret의 정보를 들고 있음
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException{
-        OAuth2User oAuth2User = super.loadUser(userRequest);
 
+        // oauthservice단의 laoduser을 이욯해서 user 정보를 가져옴 또한 Header에 Bearer{token}을 알아서 넣어줌
+        //defaultOAuth2UserService의 기능을 통해 user-info-uri로 요청을 보냄
+        // user-info-uri에서 보내준 유저 데이터(Json)을 받아옴
+        OAuth2User oAuth2User = super.loadUser(userRequest); // 부모 클래스의 기능을 빌려 네이버 서버로 부터 유저의 원본 정보를 가져옴.
+        // 어떤 서비스인지 구분하는 방법
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
