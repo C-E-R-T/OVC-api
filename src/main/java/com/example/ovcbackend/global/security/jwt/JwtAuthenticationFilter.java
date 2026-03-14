@@ -41,13 +41,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             }
         } catch (SecurityException | MalformedJwtException e) {
-            request.setAttribute("exception", "잘못된 JWT 서명입니다.");
+            request.setAttribute("exception", "INVALID_TOKEN" );
         } catch (ExpiredJwtException e) {
-            request.setAttribute("exception", "만료된 JWT 토큰입니다.");
+            request.setAttribute("exception", "EXPIRED_ACCESS_TOKEN");
         } catch (UnsupportedJwtException e) {
-            request.setAttribute("exception", "지원하지 않는 JWT 토큰입니다.");
+            request.setAttribute("exception", "UNSUPPORTED_TOKEN");
         } catch (IllegalArgumentException e) {
-            request.setAttribute("exception", "인증 오류가 발생하였습니다.");
+            request.setAttribute("exception", "ILLEGAL_TOKEN");
+        } catch (Exception e) {
+            request.setAttribute("exception", "UNKNOWN_ERROR");
         }
 
         filterChain.doFilter(request, response);
