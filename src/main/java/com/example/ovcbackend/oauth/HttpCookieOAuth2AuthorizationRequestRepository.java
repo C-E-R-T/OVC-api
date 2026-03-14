@@ -1,4 +1,4 @@
-package com.example.ovcbackend.global.cookie;
+package com.example.ovcbackend.oauth;
 
 import com.example.ovcbackend.global.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;

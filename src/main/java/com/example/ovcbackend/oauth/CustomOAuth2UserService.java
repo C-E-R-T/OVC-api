@@ -1,4 +1,4 @@
-package com.example.ovcbackend.auth.service;
+package com.example.ovcbackend.oauth;
 
 import com.example.ovcbackend.user.Role;
 import com.example.ovcbackend.user.entity.User;

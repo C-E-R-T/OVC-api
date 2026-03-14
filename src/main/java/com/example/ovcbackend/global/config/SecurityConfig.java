@@ -1,7 +1,7 @@
 package com.example.ovcbackend.global.config;
 
-import com.example.ovcbackend.auth.service.CustomOAuth2UserService;
-import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.example.ovcbackend.oauth.CustomOAuth2UserService;
+import com.example.ovcbackend.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationFilter;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;

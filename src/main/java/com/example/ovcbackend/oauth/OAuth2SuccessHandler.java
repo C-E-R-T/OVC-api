@@ -1,7 +1,6 @@
 package com.example.ovcbackend.oauth;
 
 import com.example.ovcbackend.auth.service.AuthService;
-import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
 import com.example.ovcbackend.global.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
