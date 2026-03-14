@@ -32,6 +32,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
            exceptionCode = "UNAUTHORIZED";
        }
 
+       // 점점 길어지네.. enum으로 빼는게 나으려나
        String message;
        if("EXPIRED_ACCESS_TOKEN".equals(exceptionCode)){
            message = "액세스 토큰이 만료되었습니다. 리프레시 토큰을 사용해 재발급하세요.";
@@ -41,7 +42,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
            message = "지원하지 않는 JWT 토큰입니다.";
         } else if("ILLEGAL_TOKEN".equals(exceptionCode)){
            message = "토큰이 비거나 잘못된 인자(null)입니다.";
-       } else {
+       } else if("USER_NOT_FOUND".equals(exceptionCode)){
+           message = "유저가 없습니다.";
+       }else {
            message = "인증이 필요한 서비스 입니다.";
        }
 

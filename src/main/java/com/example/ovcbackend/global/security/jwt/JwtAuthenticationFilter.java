@@ -13,12 +13,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// securityconfig에 주입하기 위해 componet를 붙여야 bean으로 등록됨.
+// securityconfig에 주입하기 위해 component를 붙여야 bean으로 등록됨.
 // security config에서 2번 실행될 수 있어서 component 제거
 
 @RequiredArgsConstructor
@@ -48,7 +49,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             request.setAttribute("exception", "UNSUPPORTED_TOKEN");
         } catch (IllegalArgumentException e) {
             request.setAttribute("exception", "ILLEGAL_TOKEN");
-        } catch (Exception e) {
+        } catch (UsernameNotFoundException e){
+            request.setAttribute("exception", "USER_NOT_FOUND");
+        }
+        catch (Exception e) {
             request.setAttribute("exception", "UNKNOWN_ERROR");
         }
 
