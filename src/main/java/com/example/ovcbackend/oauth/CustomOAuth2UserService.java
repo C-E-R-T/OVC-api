@@ -45,7 +45,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 사용자 정보 매핑 (회원가입, 업데이트)
         User user = saveOrUpdate(response, registrationId);
 
-        // security 세션에 유저 정보 저장 (권한용)
+        // security 유저 정보 저장 (권한용)
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())),
                 response, "id"

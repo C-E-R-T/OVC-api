@@ -1,5 +1,6 @@
 package com.example.ovcbackend.user.service;
 
+import com.example.ovcbackend.auth.repository.RefreshTokenRepository;
 import com.example.ovcbackend.user.dto.UserResponse;
 import com.example.ovcbackend.user.dto.UserUpdateRequest;
 import com.example.ovcbackend.user.entity.User;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -36,6 +38,19 @@ public class UserServiceImpl implements UserService{
         user.update(userUpdateRequest.getNickname());
 
         return UserResponse.from(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(String email) {
+
+        // 리프레시 토큰 삭제
+        refreshTokenRepository.deleteByEmail(email);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        userRepository.delete(user);
     }
 
 }
