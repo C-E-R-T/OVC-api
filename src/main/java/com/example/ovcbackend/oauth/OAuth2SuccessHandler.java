@@ -6,6 +6,7 @@ import com.example.ovcbackend.oauth.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.Map;
 
 // 로그인이 끝난 뒤 우리 서버의 JWT를 발행해 마이페이지로 보내는 역할
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -39,11 +41,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         //
         // customoauth2userservice에서 넘겨준 attributes 내부의 response 맵을 꺼냄
         Map<String, Object> attributes = oAuth2User.getAttributes();
-
         // 네이버는 response에 데이터가 있음 그리고 그 중 우리는 이메일을 가지고 사용자를 식별함으로 네이버 유저 정보에서
         //이메일을 추출함.
         String email = (String) attributes.get("email");
-
+        log.info("[OAuth2Success] 네이버 로그인 성공 - Email: {}", email);
         // 우리 서비스에 대한 점권 권한을 우리의 토큰으로 하기로 했으므로 이 아래부터는 우리만의 토큰 발행이 필요해짐
         //즉 네이버의 토큰은 유저를 인증하고 네이버로 부터 유저의 정보를 가져와주는 역할
         // 우리 서비스에 접근할 수 있는 토큰이 아님
@@ -60,19 +61,21 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtTokenProvider.createToken(email, role);
         String refreshToken = jwtTokenProvider.refreshToken(email);
 
+        log.info("[OAuth2Success] 서비스 전용 토큰 발행 완료 - Role: {}", role);
         // db에 refresh token을 저장(access token이 만료 시 재발급을 위해. email은 대조해보기 위해)
         authService.saveRefreshToken(email, refreshToken);
-
+        log.info("[OAuth2Success] refreshToken DB 저장 완료");
         // 서버가 만든 JWT들을 브라우저의 쿠키에 저장
         CookieUtils.addCookie(response, "accessToken", accessToken, 604800);
         CookieUtils.addCookie(response, "refreshToken", refreshToken, 604800);
-
+        log.info("[OAuth2Success] 인증 쿠키 설정 완료");
         // 백엔드에서 확인용 // 프론트엔드 리다이렉트 url
         // 로그인 처리가 다 끝난 뒤에 사용자를 보낼 프론트엔드의 주소
         String targetUrl ="http://localhost:5173/mypage";
 
         // 로그인에 성공하면, 로그인 과정 중에 생성된 불필요한 임시 데이터를 지우기
         clearAuthenticationAttributes(request, response);
+        log.info("[OAuth2Success] 모든 처리 완료. 마이페이지로 이동: {}", targetUrl);
         // 실제 브라우저를 설정한 targetUrl로 이동시킴. 이 때 브라우저는 응답 헤더에 담긴 쿠키를 함께 저장해서 이동
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
@@ -82,6 +85,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         super.clearAuthenticationAttributes(request);
         // 세션을 사용하지 않고 쿠키를 사용해 인증 요청을 처리할 것임으로 로그인이 끝났으면 그동안 브라우저에 저장하던 로그인 중에 사용된 임시 쿠키들을 모두 지워즘
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+        log.debug("[OAuth2Success] OAuth2 로그인 임시 쿠키 삭제 완료");
 
     }
 
