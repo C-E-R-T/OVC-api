@@ -85,7 +85,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         super.clearAuthenticationAttributes(request);
         // 세션을 사용하지 않고 쿠키를 사용해 인증 요청을 처리할 것임으로 로그인이 끝났으면 그동안 브라우저에 저장하던 로그인 중에 사용된 임시 쿠키들을 모두 지워즘
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
-        log.debug("[OAuth2Success] OAuth2 로그인 임시 쿠키 삭제 완료");
+        log.info("[OAuth2Success] OAuth2 로그인 임시 쿠키 삭제 완료");
 
     }
 
