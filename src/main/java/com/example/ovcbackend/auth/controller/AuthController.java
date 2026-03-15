@@ -3,7 +3,7 @@ package com.example.ovcbackend.auth.controller;
 import com.example.ovcbackend.auth.dto.*;
 import com.example.ovcbackend.auth.service.AuthService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
-import com.example.ovcbackend.global.util.CookieUtils;
+import com.example.ovcbackend.oauth.util.CookieUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

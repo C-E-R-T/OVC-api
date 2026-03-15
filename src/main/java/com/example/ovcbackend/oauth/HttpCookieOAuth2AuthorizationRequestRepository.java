@@ -1,6 +1,6 @@
 package com.example.ovcbackend.oauth;
 
-import com.example.ovcbackend.global.util.CookieUtils;
+import com.example.ovcbackend.oauth.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;

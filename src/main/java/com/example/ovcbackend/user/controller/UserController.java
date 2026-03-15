@@ -1,7 +1,7 @@
 package com.example.ovcbackend.user.controller;
 
 import com.example.ovcbackend.global.commonResponse.OkResponse;
-import com.example.ovcbackend.global.util.CookieUtils;
+import com.example.ovcbackend.oauth.util.CookieUtils;
 import com.example.ovcbackend.user.dto.UserResponse;
 import com.example.ovcbackend.user.dto.UserUpdateRequest;
 import com.example.ovcbackend.user.service.UserService;
