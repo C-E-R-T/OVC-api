@@ -3,6 +3,7 @@ package com.example.ovcbackend.global.exception;
 import com.example.ovcbackend.auth.exception.AuthBadRequestException;
 import com.example.ovcbackend.auth.exception.AuthNotFoundException;
 import com.example.ovcbackend.auth.exception.TokenInvalidException;
+import com.example.ovcbackend.certificate.exception.CertNotFoundException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteBadRequestException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteConflictException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteNotFoundException;
@@ -73,6 +74,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TokenInvalidException.class)
     public ResponseEntity<Map<String, Object>> handleTokenInvalid(TokenInvalidException e, HttpServletRequest request) {
         return  buildErrorResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), request);
+    }
+    // 이쪽 globaleception도 시간이 가능하다면 Enum 하나 만들어주는게 좋을 듯하다..
+
+    @ExceptionHandler(CertNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleCertNotFound(CertNotFoundException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
     }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message,
