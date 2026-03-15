@@ -1,6 +1,7 @@
 package com.example.ovcbackend.auth.controller;
 
 import com.example.ovcbackend.auth.dto.*;
+import com.example.ovcbackend.auth.exception.TokenInvalidException;
 import com.example.ovcbackend.auth.service.AuthService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
 import com.example.ovcbackend.oauth.util.CookieUtils;
@@ -38,9 +39,10 @@ public class AuthController {
 
     @GetMapping("/refresh")
     public ResponseEntity<OkResponse<String>> refresh(HttpServletRequest request, HttpServletResponse response) {
+        // 쿠키 자체로 이미 인증이 확인된 상태
         String refreshToken = CookieUtils.getCookies(request, "refreshToken")
                 .map(Cookie::getValue)
-                .orElseThrow(() -> new RuntimeException("리프레시 토큰이 없습니다."));
+                .orElseThrow(() -> new TokenInvalidException("리프레시 토큰이 없습니다."));
 
         TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
 
