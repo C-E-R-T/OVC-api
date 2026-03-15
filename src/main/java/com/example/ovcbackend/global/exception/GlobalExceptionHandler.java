@@ -4,6 +4,7 @@ import com.example.ovcbackend.auth.exception.AuthBadRequestException;
 import com.example.ovcbackend.auth.exception.AuthNotFoundException;
 import com.example.ovcbackend.auth.exception.TokenInvalidException;
 import com.example.ovcbackend.certificate.exception.CertNotFoundException;
+import com.example.ovcbackend.schedule.exception.ScheduleNotFoundException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteBadRequestException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteConflictException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteNotFoundException;
@@ -80,6 +81,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CertNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleCertNotFound(CertNotFoundException e, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
+    }
+
+    @ExceptionHandler(ScheduleNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleScheduleNotFound(ScheduleNotFoundException e, HttpServletRequest request) {
+        return  buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
     }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message,
