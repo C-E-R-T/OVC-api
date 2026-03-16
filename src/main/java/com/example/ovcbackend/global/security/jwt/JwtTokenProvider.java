@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -33,6 +34,10 @@ public class JwtTokenProvider {
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
         this.customUserDetailsService = customUserDetailsService;
+        //? 테스트를 위해 10000으로 바꿨는데 왜 그전 360000으로 나오지?
+        // 맨날 client_id 같은거 없다고 오류나서 local.yaml에 :로 따로 넣어줬는데
+        //원인: 또 시간은 읽는다.. env 문제였음
+//        System.out.println("설정된 Access 만료 시간: " + this.accessTokenExpiration);
     }
 
     //토큰 생성
@@ -90,6 +95,10 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         String email = getEmail(token);
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+
+        // 회원탈퇴 등으로 유저가 없을 때도 고려해야됨
+        //근데 추가했는데 왜 못잡지 userdetailservice인 줄 알았는데 아니다..
+        // 원인: 테스트한다고 /users를 permitAll로 풀어놨었음..
 
         return new UsernamePasswordAuthenticationToken(userDetails,"", userDetails.getAuthorities());
     }

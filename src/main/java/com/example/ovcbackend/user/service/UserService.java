@@ -7,4 +7,6 @@ public interface UserService {
     UserResponse getMyInfo(String email);
 
     UserResponse updateMyInfo(String email, UserUpdateRequest userUpdateRequest);
+
+    void deleteUser(String email);
 }

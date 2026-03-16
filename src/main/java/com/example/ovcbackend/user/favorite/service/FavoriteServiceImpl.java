@@ -12,6 +12,7 @@ import com.example.ovcbackend.user.favorite.exception.FavoriteNotFoundException;
 import com.example.ovcbackend.user.favorite.repository.FavoriteRepository;
 import com.example.ovcbackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -33,14 +35,20 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Override
     public List<FavoriteResponse> getFavorites(Long userId) {
+        log.info("[getFavorites] 관심 자격증 목록 조회 시작 - UserId: {}", userId );
         userRepository.findById(userId)
-                .orElseThrow(() -> new FavoriteNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> {
+                    log.error("[getFavorite] 사용자 조회 실패 - 존재하지 않는 UserId: {}", userId);
+                    return new FavoriteNotFoundException("존재하지 않는 사용자입니다.");
+                });
 
         List<Favorite> favorites = favoriteRepository.findAllByUserIdWithCertificate(userId);
         if (favorites.isEmpty()) {
+            log.info("[getFavorites] 관심 자격증이 비어 있음 - UserId: {}", userId);
             return List.of();
         }
 
+        log.info("[getFavorites] 관심 자격증 {}건 조회됨 - UserId: {}", favorites.size(), userId);
         List<Long> certIds = favorites.stream()
                 .map(favorite -> favorite.getCertificate().getId())
                 .distinct()
@@ -136,14 +144,22 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public void addFavorite(Long userId, Long certId) {
+        log.info("[addFavorite] 관심 자격증 추가 시도 - UserId: {}, CertId: {}", userId, certId);
         // FK 대상 존재 여부를 먼저 검증해서 명확한 비즈니스 에러를 반환
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new FavoriteNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> {
+                    log.error("[addFavorite] 추가 실패: 존재하지 않는 사용자입니다. - UserId: {}", userId);
+                    return new FavoriteNotFoundException("존재하지 않는 사용자입니다.");
+                });
 
         Certificate certificate = certificateRepository.findById(certId)
-                .orElseThrow(() -> new FavoriteNotFoundException("존재하지 않는 자격증입니다."));
+                .orElseThrow(() -> {
+                    log.error("[addFavorite] 추가 실패: 존재 하지 않는 자격증 - CertId: {}", certId);
+                    return  new FavoriteNotFoundException("존재하지 않는 자격증입니다.");
+                });
 
         if (favoriteRepository.existsByUser_IdAndCertificate_Id(userId, certId)) {
+            log.warn("[addFavorite] 추가 실패: 이미 찜한 자격증 - UserId, certId: {}", certId);
             throw new FavoriteConflictException("이미 찜한 자격증입니다.");
         }
 
@@ -153,15 +169,19 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .build();
 
         favoriteRepository.save(favorite);
+        log.info("[addFavorite] 관심 자격증 추가 완료 - FavoriteId: {}", favorite.getId());
     }
 
     @Override
     @Transactional
     public void removeFavorite(Long userId, Long certId) {
+        log.info("[removeFavorite] 관심 자격증 삭제 시도 - UserId: {}, CertId: {}", userId, certId);
         // deleteBy... 반환값으로 실제 삭제 여부를 판별
         long deletedCount = favoriteRepository.deleteByUser_IdAndCertificate_Id(userId, certId);
         if (deletedCount == 0) {
+            log.warn("[removeFavorite] 삭제 실패: 찜한 내역 없음 - UserId: {}, CertId: {}", userId, certId);
             throw new FavoriteNotFoundException("찜한 자격증이 아닙니다.");
         }
+        log.info("[removeFavorite] 관심 자격증 삭제 완료 - UserId: {}, CertId: {}", userId, certId);
     }
 }

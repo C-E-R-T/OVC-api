@@ -12,4 +12,7 @@ public interface AuthService {
     void saveRefreshToken(String email, String token);
 
     TokenResponse refreshAccessToken(String refreshToken);
+
+    // 로그아웃
+    void logout(String email);
 }

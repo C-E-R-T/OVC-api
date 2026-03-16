@@ -1,11 +1,12 @@
 package com.example.ovcbackend.global.config;
 
-import com.example.ovcbackend.auth.service.CustomOAuth2UserService;
-import com.example.ovcbackend.global.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.example.ovcbackend.oauth.CustomOAuth2UserService;
+import com.example.ovcbackend.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationFilter;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
-import com.example.ovcbackend.global.security.oauth.OAuth2SuccessHandler;
+import com.example.ovcbackend.oauth.OAuth2SuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,9 +47,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // access token은 localStorage방식으로 변경되서 httpOnly에 대한 csrf문제가 해결됨으로써 disable
                 // stateless로 두면 네이버 로그인 시도 에러가 나기도 함 방법을 찾아봐야될 듯 사용자가 네이버에서 로그인을 마치고 돌아왔을 때 사용자가 맞나 확인이 필요해짐
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // authorizationRequestRepository에 등록한 쿠키 기반 저장을 통해 해걸!
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않겠다고 선언
+                // 만약 인증 되지 않은 사용자가 요청을 보내면 JwtAuthenticationEntryPoint가 응답(401)를 보냄.
+                // 근데 아직 GlobalException을 설정안했는데 globalException이 exception을 채가지는 않겠지.?
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/login/oauth2/**", "/oauth2/**","/api/admin/sync/**").permitAll()
@@ -58,16 +62,24 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
                                 "/webjars/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers("/api/users/**").permitAll()// 이거 해줘야 permitAll에서 터진 에러를 보여줌
+                        .requestMatchers("/error").permitAll() // 이거 해줘야 permitAll에서 터진 에러를 보여줌
                         .anyRequest().authenticated() // permitAll 외는 인증 필요
                 )
                 .oauth2Login(oauth2 -> oauth2.authorizationEndpoint(endpoint -> endpoint
-                                .baseUri("/oauth2/authorization")
-                                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                                .baseUri("/oauth2/authorization") // 로그인 시작 주소
+                                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)) // 쿠키 기반 저장소를 사용할 거라고 선언
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)) // custionOAuth2UserService를 통해 유저 정보를 처리할 거임
                         .successHandler(oAuth2SuccessHandler) // 로그인을 성공하면 토큰 발급
                 )
+//                .logout(logout -> logout
+//                        .logoutUrl("/api/auth/logout").deleteCookies("refreshToken")
+//                        .logoutSuccessHandler(((request, response, authentication) -> {
+//                            response.setStatus(HttpServletResponse.SC_OK);
+//                            })
+//                        )
+//
+//                )
+                // Spring security의 기본 필터가 동작하기 전에 내가 만든 JwtAuthenticationFilter가 먼저 동작하도록 시행
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -80,8 +92,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://ovc-cert.duckdns.org", "https://ovc-project.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(true); // HttpOnly 쿠키를 주고 받으려면 반드시 true여야됨
+        configuration.setExposedHeaders(List.of("Authorization")); // 프론트단에서 읽을 수 있는 헤더로 설정해준다.
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

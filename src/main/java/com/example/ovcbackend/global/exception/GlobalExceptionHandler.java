@@ -1,5 +1,12 @@
 package com.example.ovcbackend.global.exception;
 
+import com.example.ovcbackend.auth.exception.AuthBadRequestException;
+import com.example.ovcbackend.auth.exception.AuthNotFoundException;
+import com.example.ovcbackend.auth.exception.TokenInvalidException;
+import com.example.ovcbackend.certificate.exception.CertNotFoundException;
+import com.example.ovcbackend.schedule.exception.ScheduleNotFoundException;
+import com.example.ovcbackend.user.exception.UserConflictException;
+import com.example.ovcbackend.user.exception.UserNotFoundException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteBadRequestException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteConflictException;
 import com.example.ovcbackend.user.favorite.exception.FavoriteNotFoundException;
@@ -54,6 +61,43 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MyCertConflictException.class)
     public ResponseEntity<Map<String, Object>> handleMyCertConflict(MyCertConflictException e, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(), request);
+    }
+
+    // Auth단의 badrequest
+    @ExceptionHandler(AuthBadRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthBadRequest(AuthBadRequestException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request);
+    }
+
+    @ExceptionHandler(AuthNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthNotFound(AuthNotFoundException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
+    }
+
+    @ExceptionHandler(TokenInvalidException.class)
+    public ResponseEntity<Map<String, Object>> handleTokenInvalid(TokenInvalidException e, HttpServletRequest request) {
+        return  buildErrorResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), request);
+    }
+    // 이쪽 globaleception도 시간이 가능하다면 Enum 하나 만들어주는게 좋을 듯하다..
+
+    @ExceptionHandler(CertNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleCertNotFound(CertNotFoundException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
+    }
+
+    @ExceptionHandler(ScheduleNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleScheduleNotFound(ScheduleNotFoundException e, HttpServletRequest request) {
+        return  buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), request);
+    }
+
+    @ExceptionHandler(UserConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleUserConflict(UserConflictException e, HttpServletRequest request) {
+        return  buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(),request);
     }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message,
