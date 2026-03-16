@@ -61,7 +61,8 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
-        //[]
+        //[spring security 문서 내용]: to the time the Authorization Response is received(the callback)
+        // 콜백을 받아 인증이 완료된 시점에, 더 이상 필요없는 임시 데이터를 제거
         log.info("[OAuth2CookieRepo] 인증 요청 정보 제거를 위해 조회를 수행합니다.");
         return this.loadAuthorizationRequest(request);
     }

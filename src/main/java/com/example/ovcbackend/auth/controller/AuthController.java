@@ -45,9 +45,13 @@ public class AuthController {
                 .orElseThrow(() -> new TokenInvalidException("리프레시 토큰이 없습니다."));
 
         TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
-
+        // 토큰이 새로 발급된 경우에만 쿠키를 다시 구워주기
+        if(tokenResponse.getRefreshToken() != null) {
+            CookieUtils.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 604800);
+        }
+        // 갱신 되지 않을 경우 (null)일 경우 아무것도 하지 않음 - 기존 refreshToken 그대로 사용
 //        CookieUtils.addCookie(response, "accessToken", tokenResponse.getAccessToken(), 3600);
-        CookieUtils.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 3600);
+//        CookieUtils.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 3600);
         return ResponseEntity.ok(OkResponse.success("토큰 재발급 성공", tokenResponse.getAccessToken(), request.getRequestURI()));
     }
 

@@ -132,9 +132,22 @@ public class AuthServiceImpl implements AuthService{
                 });
         //새로운 토큰 발급
         String newAccessToken = jwtTokenProvider.createToken(user.getEmail(), user.getRole().name());
-        String newRefreshToken = jwtTokenProvider.refreshToken(user.getEmail());
+//        String newRefreshToken = jwtTokenProvider.refreshToken(user.getEmail());
+        String newRefreshToken = null;
 
-        saveRefreshToken.updateToken(newRefreshToken, jwtTokenProvider.getExpirationLocalDateTime(newRefreshToken));
+        LocalDateTime now = LocalDateTime.now();
+        if(saveRefreshToken.getExpiresAt().isBefore(now.plusDays(3))) {
+            log.info("[refreshAccessToken] 리프레시 토큰 만료 3일 미만");
+
+            newRefreshToken = jwtTokenProvider.refreshToken(user.getEmail());
+            LocalDateTime newExpiresAt = jwtTokenProvider.getExpirationLocalDateTime(newRefreshToken);
+
+            saveRefreshToken.updateToken(newRefreshToken, newExpiresAt);
+
+        } else {
+            log.info("[refreshAccessToken] 리프레시 토큰 기간이 넉넉합니다. - Access Token만 재발급");
+        }
+
         log.info("[refreshAccessToken] 토큰 재발급 완료 - Email: {}", user.getEmail());
         return TokenResponse.of(newAccessToken,newRefreshToken);
     }
