@@ -2,6 +2,7 @@ package com.example.ovcbackend.certificate.controller;
 
 import com.example.ovcbackend.certificate.dto.CertResponse;
 import com.example.ovcbackend.certificate.dto.CertSearchResponse;
+import com.example.ovcbackend.certificate.dto.CertificateRankResponse;
 import com.example.ovcbackend.certificate.service.CertificateService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,6 +44,14 @@ public class CertificateController {
         Page<CertSearchResponse> response = certificateService.searchCertificates(categoryIds,keyword,pageable);
 
         return ResponseEntity.ok(OkResponse.successPage(response, request.getRequestURI()));
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity<OkResponse<List<CertificateRankResponse>>> getPopularCertificates(
+            HttpServletRequest request
+    ) {
+        List<CertificateRankResponse> responses = certificateService.getTop3PopularCertificates();
+        return ResponseEntity.ok(OkResponse.success(responses, request.getRequestURI()));
     }
 
 

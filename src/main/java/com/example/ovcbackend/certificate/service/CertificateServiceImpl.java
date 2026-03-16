@@ -3,12 +3,14 @@ package com.example.ovcbackend.certificate.service;
 import com.example.ovcbackend.certificate.dto.CertResponse;
 
 import com.example.ovcbackend.certificate.dto.CertSearchResponse;
+import com.example.ovcbackend.certificate.dto.CertificateRankResponse;
 import com.example.ovcbackend.certificate.entity.Certificate;
 import com.example.ovcbackend.certificate.exception.CertNotFoundException;
 import com.example.ovcbackend.certificate.repository.CertificateRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,4 +59,10 @@ public class CertificateServiceImpl implements CertificateService{
                 );
 
     }
+
+    @Override
+    public List<CertificateRankResponse> getTop3PopularCertificates() {
+        return certificateRepository.findTop3CertificateWithCount(PageRequest.of(0, 3));
+    }
+
 }

@@ -1,11 +1,13 @@
 package com.example.ovcbackend.certificate.repository;
 
 
+import com.example.ovcbackend.certificate.dto.CertificateRankResponse;
 import com.example.ovcbackend.certificate.entity.Certificate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 
 import java.util.List;
@@ -30,4 +32,11 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     // 외부 종목코드(cert_id)로 자격증 단건 조회
     Optional<Certificate> findByCertId(String certId);
 
+    @Query("SELECT new com.example.ovcbackend.certificate.dto.CertificateRankResponse( " +
+                "c.id, c.name, COUNT(f)) " +
+                "FROM Favorite f " +
+                "JOIN f.certificate c " +
+                "GROUP BY c.id, c.name " +
+                "ORDER BY COUNT(f) DESC")
+    List<CertificateRankResponse> findTop3CertificateWithCount(Pageable pageable);
 }
