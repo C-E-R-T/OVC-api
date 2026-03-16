@@ -16,10 +16,18 @@ public class CertResponse {
     private String authority;
     @Schema(name = "필기 응시료", example = "19400")
     private Integer writtenFee;
+    @Schema(name = "실기 응시료", example = "19400")
     private Integer practicalFee;
+    @Schema(name = "출제경향", example = "19400")
     private String examTrend;
+    @Schema(name = "취득방법", example = "19400")
     private String acqMethod;
-    private String precautions;
+    @Schema(name = "시험과목", example = "19400")
+    private String examSubject;
+    @Schema(name = "합격기준", example = "19400")
+    private String passCriteria;
+    @Schema(name = "관련학과", example = "19400")
+    private String relatedDepartment;
 
     // 엔터티 -> dto
     public static CertResponse from(Certificate entity) {
@@ -30,7 +38,9 @@ public class CertResponse {
                 .practicalFee(entity.getPracticalFee())
                 .examTrend(entity.getExamTrend())
                 .acqMethod(entity.getAcqMethod())
-                .precautions(entity.getPrecautions())
+                .examSubject(entity.getExamSubject())
+                .passCriteria(entity.getPassCriteria())
+                .relatedDepartment(entity.getRelatedDepartment())
                 .build();
     }
 }
