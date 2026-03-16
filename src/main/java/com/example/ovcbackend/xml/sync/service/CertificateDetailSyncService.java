@@ -57,6 +57,7 @@ public class CertificateDetailSyncService {
         }
 
         List<Certificate> certificates = new ArrayList<>();
+        // key: jmCd, value: 스킵/실패 사유 코드
         Map<String, String> skippedReasons = new LinkedHashMap<>();
         for (String certId : certIds) {
             if (certId == null || certId.isBlank()) {
@@ -98,6 +99,7 @@ public class CertificateDetailSyncService {
             String apiUrl = baseUrl + "?serviceKey=" + serviceKey + "&jmCd=" + jmCd;
 
             try {
+                // 외부 API가 간헐적으로 빈 items를 반환하므로 재시도 후 응답 사용
                 CertificateDetailApiResponse response = fetchWithRetryOnEmptyItems(apiUrl, jmCd);
 
                 if (response == null || response.getBody() == null) {
@@ -164,6 +166,7 @@ public class CertificateDetailSyncService {
             }
 
             if (attempt < MAX_EMPTY_ITEMS_RETRY) {
+                // 빈 응답 직후 즉시 재호출 시 동일 결과가 잦아 짧은 간격으로 완충
                 sleepRetryDelay();
             }
         }

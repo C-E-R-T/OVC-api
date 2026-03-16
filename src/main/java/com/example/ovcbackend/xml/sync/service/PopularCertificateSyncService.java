@@ -55,6 +55,7 @@ public class PopularCertificateSyncService {
 
         CertificateDetailSyncService.DetailSyncResult detailSyncResult =
                 certificateDetailSyncService.updateCertificateDetailsByCertIdsWithReasons(categorySyncResult.getCertIds());
+        // quota 절약을 위해 상세 동기화 이후 일정 동기화를 같은 매칭 집합으로 이어서 실행
         List<String> scheduleSyncedCertIds = scheduleSyncService.syncCurrentYearSchedules(categorySyncResult.getCertIds());
 
         return SyncSummary.builder()
