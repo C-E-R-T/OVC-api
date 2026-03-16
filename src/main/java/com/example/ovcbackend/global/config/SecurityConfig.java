@@ -47,7 +47,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable()) // JWT는 세션을 안 써서 꺼줌
+                .csrf(csrf -> csrf.disable()) // access token은 localStorage방식으로 변경되서 httpOnly에 대한 csrf문제가 해결됨으로써 disable
                 // stateless로 두면 네이버 로그인 시도 에러가 나기도 함 방법을 찾아봐야될 듯 사용자가 네이버에서 로그인을 마치고 돌아왔을 때 사용자가 맞나 확인이 필요해짐
                 // authorizationRequestRepository에 등록한 쿠키 기반 저장을 통해 해걸!
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않겠다고 선언
