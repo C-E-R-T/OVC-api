@@ -5,6 +5,7 @@ import com.example.ovcbackend.oauth.util.CookieUtils;
 import com.example.ovcbackend.user.dto.UserResponse;
 import com.example.ovcbackend.user.dto.UserUpdateRequest;
 import com.example.ovcbackend.user.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "User controller", description = "user 관련 api")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
