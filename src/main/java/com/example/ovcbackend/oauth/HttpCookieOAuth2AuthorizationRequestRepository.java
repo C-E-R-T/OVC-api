@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component // Spring Bean으로 동록해 SecurityConfig에서 불러와 사용할 수 있게 함
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
+    // [spring security 문서]: responsible for the persistance of the OAuth2Authorization
+    // 세션 대신 쿠키를 통해 인증 요청 정보를 유지함
     // 정보를 저장할 쿠키의 이름
     public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     // 쿠키의 유효 기간
@@ -19,6 +21,9 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
+        //[spring security 문서]: used to correlate and validate the authorization response
+        // 네이버로부터 돌아온 응답(callback)이 내가 보냈던 요청이 맞는지 확인하기 위해
+        // 쿠키에 기존 요청 정보를 읽어와 대조(correlate)할 준비를 함
         // HttpServletRequest 속에 저장한 쿠키가 있는지 확인
         log.info("[OAuth2CookieRepo] 인증 요청 정보 조회 시도");
         // oauth2_auth_request인 쿠키를 찾음
@@ -39,6 +44,8 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest,
                                          HttpServletRequest request,
                                          HttpServletResponse response) {
+        //[spring security 문서]: form the time the authorization request is initiated
+        // 적용: 사용자가 네이버 로그인 버튼을 눌러 요청이 시작되는 시점에 보안을 위해 임지 정보를 쿠키에 저장함
         // 만약 저장할 정보가 비어있다면, 기존에 남아있을지 모를 쿠키를 삭제
         if(authorizationRequest == null) {
             log.info("[OAuth2CookieRepo] 전달된 요청이 비어있어 인증 쿠키를 삭제합니다.");
@@ -54,6 +61,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
+        //[]
         log.info("[OAuth2CookieRepo] 인증 요청 정보 제거를 위해 조회를 수행합니다.");
         return this.loadAuthorizationRequest(request);
     }
