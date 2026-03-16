@@ -5,6 +5,7 @@ import com.example.ovcbackend.auth.exception.TokenInvalidException;
 import com.example.ovcbackend.auth.service.AuthService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
 import com.example.ovcbackend.oauth.util.CookieUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +39,7 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
+    @Operation(summary = "access token 재발급", description = "refresh token으로 새로운 access token을 재발급합니다.")
     public ResponseEntity<OkResponse<String>> refresh(HttpServletRequest request, HttpServletResponse response) {
         // 쿠키 자체로 이미 인증이 확인된 상태
         String refreshToken = CookieUtils.getCookies(request, "refreshToken")
@@ -56,6 +58,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃을 진행합니다.")
     public ResponseEntity<OkResponse<Void>> logout(HttpServletRequest request, HttpServletResponse response) {
         // SecurityContext에서 현재 로그인한 유저 정보를 추출. 특히 우리는 식별자가 email임으로 email
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
