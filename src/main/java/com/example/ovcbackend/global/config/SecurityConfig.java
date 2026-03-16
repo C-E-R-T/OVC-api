@@ -6,6 +6,7 @@ import com.example.ovcbackend.global.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.ovcbackend.global.security.jwt.JwtAuthenticationFilter;
 import com.example.ovcbackend.global.security.jwt.JwtTokenProvider;
 import com.example.ovcbackend.oauth.OAuth2SuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,6 +71,14 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)) // custionOAuth2UserService를 통해 유저 정보를 처리할 거임
                         .successHandler(oAuth2SuccessHandler) // 로그인을 성공하면 토큰 발급
                 )
+//                .logout(logout -> logout
+//                        .logoutUrl("/api/auth/logout").deleteCookies("refreshToken")
+//                        .logoutSuccessHandler(((request, response, authentication) -> {
+//                            response.setStatus(HttpServletResponse.SC_OK);
+//                            })
+//                        )
+//
+//                )
                 // Spring security의 기본 필터가 동작하기 전에 내가 만든 JwtAuthenticationFilter가 먼저 동작하도록 시행
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();

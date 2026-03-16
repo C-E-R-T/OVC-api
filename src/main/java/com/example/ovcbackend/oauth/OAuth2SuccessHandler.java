@@ -66,12 +66,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         authService.saveRefreshToken(email, refreshToken);
         log.info("[OAuth2Success] refreshToken DB 저장 완료");
         // 서버가 만든 JWT들을 브라우저의 쿠키에 저장
-        CookieUtils.addCookie(response, "accessToken", accessToken, 604800);
+//        CookieUtils.addCookie(response, "accessToken", accessToken, 604800);
         CookieUtils.addCookie(response, "refreshToken", refreshToken, 604800);
         log.info("[OAuth2Success] 인증 쿠키 설정 완료");
         // 백엔드에서 확인용 // 프론트엔드 리다이렉트 url
         // 로그인 처리가 다 끝난 뒤에 사용자를 보낼 프론트엔드의 주소
-        String targetUrl ="http://localhost:5173/mypage";
+        String targetUrl ="http://localhost:5173/mypage?accessToken=" + accessToken;
 
         // 로그인에 성공하면, 로그인 과정 중에 생성된 불필요한 임시 데이터를 지우기
         clearAuthenticationAttributes(request, response);

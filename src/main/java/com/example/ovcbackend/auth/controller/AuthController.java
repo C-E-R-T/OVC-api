@@ -46,10 +46,9 @@ public class AuthController {
 
         TokenResponse tokenResponse = authService.refreshAccessToken(refreshToken);
 
-        CookieUtils.addCookie(response, "accessToken", tokenResponse.getAccessToken(), 3600);
-        CookieUtils.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 604800);
-
-        return ResponseEntity.ok(OkResponse.success("토큰 재발급 성공", request.getRequestURI()));
+//        CookieUtils.addCookie(response, "accessToken", tokenResponse.getAccessToken(), 3600);
+        CookieUtils.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 3600);
+        return ResponseEntity.ok(OkResponse.success("토큰 재발급 성공", tokenResponse.getAccessToken(), request.getRequestURI()));
     }
 
     @PostMapping("/logout")
@@ -62,7 +61,6 @@ public class AuthController {
         }
 
         // 브라우저에서 쿠키를 삭제함 (accessToken, refreshToken을 전부 다)
-        CookieUtils.deleteCookie(request, response, "accessToken");
         CookieUtils.deleteCookie(request, response, "refreshToken");
 
         return ResponseEntity.ok(OkResponse.success("로그아웃이 완료되었습니다.", request.getRequestURI()));
