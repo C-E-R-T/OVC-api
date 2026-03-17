@@ -30,9 +30,10 @@ public class UserController {
             @AuthenticationPrincipal UserDetails userDetails,
             HttpServletRequest request
             ) {
-        if (userDetails == null) {
-            throw new RuntimeException("인증 정보가 없습니다. 다시 로그인해주세요.");
-        }
+        // ? entrypoint가 있는데 이게 도달이 가능한가? 올 수 없을 듯
+//        if (userDetails == null) {
+//            throw new RuntimeException("인증 정보가 없습니다. 다시 로그인해주세요.");
+//        }
 
         String email = userDetails.getUsername();
 
