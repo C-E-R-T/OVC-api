@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
+    @Operation(summary = "회원가입", description = "회원가입을 진행합니다.")
     @PostMapping("/signup")
     public ResponseEntity<OkResponse<SignUpResponse>> signup (@RequestBody
     SignUpRequest signUpRequest, HttpServletRequest request){
@@ -31,6 +32,7 @@ public class AuthController {
         return ResponseEntity.ok(OkResponse.success("회원가입이 완료되었습니다.", signUpResponse, request.getRequestURI()));
     }
 
+    @Operation(summary = "로그인", description = "로그인을 진행합니다.")
     @PostMapping("/login")
     public ResponseEntity<OkResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request){
         LoginResponse loginResponse = authService.login(loginRequest);
