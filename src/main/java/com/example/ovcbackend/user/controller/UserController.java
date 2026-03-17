@@ -5,6 +5,7 @@ import com.example.ovcbackend.oauth.util.CookieUtils;
 import com.example.ovcbackend.user.dto.UserResponse;
 import com.example.ovcbackend.user.dto.UserUpdateRequest;
 import com.example.ovcbackend.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    @Operation(summary = "내 정보 조회", description = "현재 로그인한 사용자의 정보를 조회합니다.")
     @GetMapping("/me")
     public ResponseEntity<OkResponse<UserResponse>> getMyProfile(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -39,6 +41,7 @@ public class UserController {
         return ResponseEntity.ok(OkResponse.success(response, request.getRequestURI()));
     }
 
+    @Operation(summary = "내 정보 수정", description = "사용자의 정보를 수정합니다.")
     @PatchMapping("/me")
     public ResponseEntity<OkResponse<UserResponse>> updateMyProfile(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -54,15 +57,18 @@ public class UserController {
 
 
     // 회원탈퇴 시 refresh토큰, 쿠키, 유저 데이터 삭제
+    @Operation(summary = "회원탈퇴", description = "유저 데이터를 삭제합니다.")
     @DeleteMapping("/me")
     public ResponseEntity<OkResponse<Void>> deleteUser(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         // db에서 유저 데이터 삭제
         if(auth != null && auth.isAuthenticated()) {
             userService.deleteUser(auth.getName());
+
+            SecurityContextHolder.clearContext();
         }
         // 쿠키 삭제
-        CookieUtils.deleteCookie(request, response, "accessToken");
+//        CookieUtils.deleteCookie(request, response, "accessToken");
         CookieUtils.deleteCookie(request, response, "refreshToken");
 
         return ResponseEntity.ok(OkResponse.success("회원탈퇴가 완료되었습니다.", request.getRequestURI()));
