@@ -3,6 +3,7 @@ package com.example.ovcbackend.category.controller;
 import com.example.ovcbackend.category.dto.CategoryResponse;
 import com.example.ovcbackend.category.service.CategoryService;
 import com.example.ovcbackend.global.commonResponse.OkResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @Operation(summary = "전체 카테고리 목록 조회", description = "서비스에서 사용하는 모든 카테고리 목록을 반환합니다.")
     @GetMapping
     public ResponseEntity<OkResponse<List<CategoryResponse>>> getAllCategories(HttpServletRequest request) {
         List<CategoryResponse> response = categoryService.getAllCategories();
